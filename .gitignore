@@ -1,0 +1,10 @@
+# nunca subir binarios del port ni archivos del juego
+*.apk
+*.xex
+*.cpk
+*.so
+
+# generados por patcher/build.py
+patcher/build/
+patcher/.tools/
+__pycache__/
