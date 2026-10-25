@@ -98,7 +98,11 @@ def tool(name):
     if not path.exists():
         TOOLS.mkdir(exist_ok=True)
         print(f"descargando {name}...")
-        urllib.request.urlretrieve(url, path)
+        try:
+            urllib.request.urlretrieve(url, path)
+        except OSError as e:
+            path.unlink(missing_ok=True)
+            fail(f"no se pudo descargar {name} ({e}). Revisa tu internet y vuelve a intentar.")
     if digest(path, algo) != expected:
         path.unlink()
         fail(f"{name} no coincide con el hash esperado; se borro, vuelve a intentar.")

@@ -1,63 +1,193 @@
 # Mejoras para el port nativo de Naruto Storm 3 Full Burst (Android)
 
-Parche **no oficial** para el [port nativo de Naruto Shippuden: Ultimate Ninja Storm 3 Full Burst](https://github.com/Masterllgod/naruto-storm-3-full-burst-port-nativo), creado por **Masterllgod**. Todo el mérito del port (recompilación, motor y gráficos) es suyo.
+Parche **no oficial** para el [port nativo de Naruto Shippuden: Ultimate Ninja Storm 3 Full Burst](https://github.com/Masterllgod/naruto-storm-3-full-burst-port-nativo), creado por **Masterllgod**. Todo el mérito del port (que el juego corra en Android) es suyo. Las mejoras se le propusieron en [este issue](https://github.com/Masterllgod/naruto-storm-3-full-burst-port-nativo/issues/21).
 
-Este repo **no incluye el APK ni archivos del juego**. Contiene solo un script que toma el APK original, que bajas del repo del autor, y le aplica las mejoras.
+> **Este repositorio no trae el juego ni la app.** Trae un programa que toma la app original (que bajas del repo del autor) y le agrega las mejoras en tu computadora.
 
-## Mejoras
+## ¿Qué agrega?
 
-| Mejora | Detalle |
+| Mejora | Qué vas a ver |
 |---|---|
-| App en español | Todos los menús y avisos de la app traducidos del portugués (117 textos + 3 mensajes del motor). |
-| Idioma del texto del juego | Selector **English · Español · Français**. El disco NTSC-U ya trae los tres idiomas; el port siempre mostraba inglés. |
-| FPS del juego | Selector **24 · 30 · 45 FPS**. 30 es la velocidad normal; 45 se ve más fluido pero el juego va 1.5x más rápido (la lógica está atada a los frames). |
-| Salir del juego | Botón "Salir del juego" en el menú de la tuerca, con confirmación. |
+| **App en español** | Todos los menús y avisos de la app, que venían en portugués. |
+| **Idioma del juego** | Opción **"Idioma del texto": English · Español · Français**. El juego americano ya traía español, pero la app siempre lo mostraba en inglés. |
+| **FPS del juego** | Opción **"FPS del juego": 24 · 30 · 45**. Usa **30** para jugar normal. 45 se ve más fluido, pero el juego va **más rápido** de lo normal. |
+| **Salir del juego** | Dentro del juego, al tocar la **tuerca**, aparece el botón **"Salir del juego"**. |
 
-## Requisitos
+---
 
-- El APK original **v0.3.1 arm64** del repo del autor:
-  `SHA-256 89fda15b1c4b0b5338ecc31d90655ea7b4f63a4dbcfaa327446b8078f29dc847`
-- Python 3.10+
-- JDK 17+ (`java` y `javac` en el PATH, o `JAVA_HOME` definido)
+# Guía paso a paso
 
-El script descarga apktool 3.0.3, uber-apk-signer 1.3.0 y D8 (R8 8.13.25) desde sus fuentes oficiales y verifica sus hashes.
+Vas a necesitar:
+- Una **computadora con Windows** (más abajo hay notas para Linux y Mac).
+- Tu **celular Android** con el juego ya funcionando en la app original, o al menos con la carpeta del juego copiada.
+- Un **cable USB** para conectar el celular a la computadora.
+- Unos **30 minutos** la primera vez.
 
-## Uso
+## Paso 1. Respalda tu partida (no te lo saltes)
 
-```sh
-python patcher/build.py NarutoStorm3FullBurst-PortNativo-v0.3.1-arm64.apk
-```
+Para instalar la versión mejorada hay que **desinstalar la app original**, y **Android borra tus partidas al desinstalar**. Primero haz una copia:
 
-Genera `NarutoStorm3FullBurst-PortNativo-v0.3.1-arm64-mejoras.apk`.
+1. Conecta el celular a la computadora con el cable USB.
+2. En el celular, baja la barra de notificaciones, toca el aviso de USB y elige **"Transferencia de archivos"** (o "MTP").
+3. En la computadora, abre el **Explorador de archivos** y entra a tu celular → **Almacenamiento interno** → `Android` → `data` → `com.naruto.storm3`.
+4. Copia la carpeta **`files`** completa a tu computadora, por ejemplo al Escritorio, en una carpeta llamada `respaldo-naruto`.
+5. Comprueba que dentro de la copia exista un archivo llamado **`STORM3FB.S`** (está dentro de `files\data\content\...`). Esa es tu partida.
 
-**Al instalar:** el APK queda firmado con otra clave, así que Android no lo instala encima del original. Respalda tus saves y la configuración, desinstala el original e instala el nuevo.
+> Si no ves la carpeta `com.naruto.storm3`, abre la app original una vez y vuelve a intentarlo. Si nunca jugaste, no hay nada que respaldar y puedes seguir.
 
-## Idioma del texto: cómo funciona
+## Paso 2. Instala Python y Java en la computadora
 
-El juego pide sus textos en la carpeta `eng` dentro de `data/disc/dataRegion.cpk` y `dlc.cpk`. Al tocar **Jugar**, la app reescribe solo el índice de esos CPK (unos KB al inicio) para que las entradas `eng` apunten a los datos `spa` o `fre`. Los datos del juego no se modifican, y la primera vez se guarda el índice original en la memoria privada de la app, así que siempre se puede volver al inglés.
+El programa que aplica las mejoras necesita **Python** y **Java (JDK)**. Se instalan una sola vez.
 
-- Usa los **CPK originales** de tu copia NTSC-U. Si ya están modificados, la app avisa y no toca nada.
-- Solo cambian los textos y subtítulos; las voces quedan igual.
+**Python:**
+1. Entra a https://www.python.org/downloads/ y toca el botón amarillo **"Download Python 3.x"**.
+2. Abre el instalador. **Muy importante:** en la primera pantalla marca la casilla **"Add python.exe to PATH"**, y luego toca **"Install Now"**.
 
-### Herramienta independiente: `cpk-idioma/cpk_lang.py`
+**Java (JDK):**
+1. Entra a https://adoptium.net/temurin/releases/?os=windows&package=jdk&version=21
+2. Descarga el archivo **`.msi`** de la versión **21** para **Windows x64**.
+3. Abre el instalador. En la pantalla de opciones, busca **"Set JAVA_HOME variable"** y cámbiala a **"Will be installed on local hard drive"**. Luego sigue con **"Next"** hasta terminar.
 
-Hace lo mismo desde la PC, sin el APK. Sirve para cualquier emulador o port que use el disco NTSC-U:
+**Comprueba que quedaron bien instalados:**
+1. Presiona la tecla **Windows**, escribe `cmd` y presiona **Enter**. Se abre una ventana negra (la "terminal").
+2. Escribe `python --version` y presiona Enter. Debe responder algo como `Python 3.12.x`.
+3. Escribe `javac -version` y presiona Enter. Debe responder algo como `javac 21.0.x`.
 
+> Si alguno dice *"no se reconoce como un comando"*, cierra la ventana negra y abre una nueva (los programas recién instalados no aparecen en ventanas que ya estaban abiertas). Si sigue igual, reinicia la computadora. Ver también [Problemas comunes](#problemas-comunes).
+
+## Paso 3. Descarga la app original
+
+1. Entra a la página de descargas del autor: https://github.com/Masterllgod/naruto-storm-3-full-burst-port-nativo/releases
+2. En la versión **v0.3.1**, descarga **`NarutoStorm3FullBurst-PortNativo-v0.3.1-arm64.apk`**.
+3. Déjalo en tu carpeta **Descargas**.
+
+> Solo sirve **ese archivo exacto**. El programa lo comprueba solo y te avisa si es otro.
+
+## Paso 4. Descarga este repositorio
+
+1. Arriba en esta página, toca el botón verde **"<> Code"** y luego **"Download ZIP"**.
+2. Ve a tu carpeta **Descargas**, haz clic derecho sobre `descompilatorgame-main.zip` → **"Extraer todo..."** → **"Extraer"**.
+3. Se crea la carpeta `descompilatorgame-main`. Ábrela: deben verse las carpetas `patcher`, `cpk-idioma` y `docs`.
+
+## Paso 5. Crea la app mejorada
+
+1. Dentro de la carpeta `descompilatorgame-main`, haz clic en la **barra de direcciones** del Explorador (arriba, donde dice la ruta), escribe `cmd` y presiona **Enter**. Se abre la ventana negra ya ubicada en esa carpeta.
+2. Copia este comando, pégalo en la ventana negra (clic derecho pega) y presiona **Enter**:
+
+   ```
+   python patcher\build.py "%USERPROFILE%\Downloads\NarutoStorm3FullBurst-PortNativo-v0.3.1-arm64.apk"
+   ```
+
+3. Espera de 1 a 3 minutos. La primera vez descarga unas herramientas (unos 25 MB). Debe verse algo así:
+
+   ```
+   1/5 desarmando el APK...
+   descargando apktool.jar...
+   2/5 aplicando traduccion y funciones nuevas...
+   3/5 armando el APK...
+   4/5 compilando el selector de idioma...
+   descargando r8.jar...
+   5/5 firmando...
+   descargando uber-apk-signer.jar...
+   listo: NarutoStorm3FullBurst-PortNativo-v0.3.1-arm64-mejoras.apk
+   ```
+
+4. Cuando diga **`listo`**, en la carpeta `descompilatorgame-main` aparece el archivo **`NarutoStorm3FullBurst-PortNativo-v0.3.1-arm64-mejoras.apk`**. Esa es tu app mejorada.
+
+> Si aparece una línea que empieza con **`ERROR:`**, mira [Problemas comunes](#problemas-comunes).
+
+## Paso 6. Instala la app mejorada en el celular
+
+1. Con el celular conectado por USB (en "Transferencia de archivos"), copia `NarutoStorm3FullBurst-PortNativo-v0.3.1-arm64-mejoras.apk` a la carpeta **Download** del celular. También puedes mandártelo por Google Drive o Telegram.
+2. **Desinstala la app original:** en el celular, mantén presionado el ícono de la app → **Desinstalar**. (Ya respaldaste tu partida en el Paso 1.)
+3. Abre la app **Archivos** (o "Mis archivos") del celular, entra a **Download** y toca el archivo `...-mejoras.apk`.
+4. Si Android dice que por seguridad no se permite instalar apps de esa fuente, toca **"Configuración"**, activa **"Permitir de esta fuente"**, vuelve atrás y toca **"Instalar"**.
+5. Abre la app. Igual que con la original, elige la carpeta del juego con **ELEGIR CARPETA** y dale permiso de acceso a los archivos.
+
+## Paso 7. Recupera tu partida
+
+1. Copia tu archivo **`STORM3FB.S`** del respaldo (Paso 1) a la carpeta **Download** del celular.
+2. En la app, toca **"Importar save"** → **"Elegir archivo"** y elige ese `STORM3FB.S`.
+3. Debe aparecer el aviso **"Save importado"**.
+
+## Paso 8. Elige idioma y FPS, y juega
+
+1. En la pantalla de inicio, en **"Idioma del texto"**, toca **Español** (viene seleccionado por defecto).
+2. En **"FPS del juego"**, deja **30 FPS** para jugar a velocidad normal.
+3. Toca **Jugar**. Los textos del juego salen en español (las voces no cambian).
+4. Para salir: dentro del juego toca la **tuerca** → **"Salir del juego"** → **"Salir"**.
+
+> Si al tocar Jugar aparece **"ya viene modificado: pon el original del juego para poder elegir idioma"**, los archivos `dataRegion.cpk` o `dlc.cpk` de tu carpeta del juego no son los originales (alguien ya los cambió). Vuelve a copiar esos dos archivos desde tu copia original del juego, a la carpeta `data/disc` del juego en el celular.
+
+---
+
+## Problemas comunes
+
+| Mensaje o problema | Qué hacer |
+|---|---|
+| `"python" no se reconoce como un comando` | Reinstala Python marcando **"Add python.exe to PATH"** (Paso 2). Como alternativa, usa `py` en lugar de `python` en el comando del Paso 5. |
+| Se abre la **Microsoft Store** al escribir `python` | Python no quedó instalado o no está en el PATH. Repite la instalación del Paso 2. |
+| `ERROR: no encuentro 'javac'` | Instalaste solo Java (JRE) o no se configuró `JAVA_HOME`. Instala el **JDK 21 `.msi`** del Paso 2 activando **"Set JAVA_HOME variable"**, cierra la ventana negra y abre una nueva. |
+| `ERROR: ese APK no es el v0.3.1 arm64 original` | El archivo no es el correcto, o está incompleto. Descárgalo de nuevo desde el Paso 3, sin renombrarlo ni modificarlo. |
+| `ERROR: ... no coincide con el hash esperado` | Una descarga de herramientas salió mal (internet inestable). Ejecuta el mismo comando otra vez. |
+| `ERROR: no se pudo descargar` / error de conexión | Revisa tu internet o el antivirus/firewall y vuelve a intentar. |
+| En el celular: **"App no instalada"** | Seguramente la app original sigue instalada. Desinstálala (Paso 6.2) y vuelve a instalar. |
+| La app se cierra al abrir el juego | Abre la app → **"Enviar log"** y repórtalo en los [issues de este repo](https://github.com/Willd233/descompilatorgame/issues) con el modelo de tu celular. |
+| El juego va muy rápido | Elegiste **45 FPS**. Cambia a **30 FPS**. |
+| Perdí mi partida | Si hiciste el Paso 1, impórtala con el Paso 7. Si no, Android la borró al desinstalar y no se puede recuperar. |
+
+---
+
+## Linux y macOS
+
+Todo es igual, salvo los Pasos 2, 4 y 5:
+- **Paso 2:** instala Python 3.10+ y un JDK 17+. Por ejemplo, en Ubuntu/Debian: `sudo apt install python3 openjdk-21-jdk`; en macOS con Homebrew: `brew install python openjdk@21`.
+- **Paso 4:** extrae el ZIP con doble clic.
+- **Paso 5:** abre una terminal en la carpeta extraída y ejecuta:
+  ```sh
+  python3 patcher/build.py ~/Downloads/NarutoStorm3FullBurst-PortNativo-v0.3.1-arm64.apk
+  ```
+
+---
+
+## Información técnica
+
+<details>
+<summary>Cómo funciona por dentro (para desarrolladores)</summary>
+
+### El parche (`patcher/build.py`)
+1. Comprueba el SHA-256 del APK original (`89fda15b1c4b0b5338ecc31d90655ea7b4f63a4dbcfaa327446b8078f29dc847`, v0.3.1 arm64).
+2. Descarga apktool 3.0.3, uber-apk-signer 1.3.0 y D8 (R8 8.13.25) desde sus fuentes oficiales y verifica sus hashes.
+3. Desarma el APK (`apktool d -r`), traduce los `const-string` PT→ES ([translate_es.py](patcher/translate_es.py)) y aplica los cambios al smali. Cada cambio exige encontrar su fragmento exacto **una sola vez**; si no lo encuentra, se detiene en vez de parchear a ciegas.
+4. Reemplaza 3 textos del motor en `libmain.so` por traducciones del **mismo largo en bytes**, para no mover nada en `.rodata`.
+5. Compila [LangPatcher.java](patcher/java/com/naruto/port/LangPatcher.java) a `classes2.dex` (minSdk 29, multidex nativo), arma el APK y lo firma con la clave de depuración de uber-apk-signer.
+
+### Selector de FPS
+El launcher le pasa al motor `frame_rate`, que es el **vblank** de la Xbox 360 emulada. El juego presenta 1 frame cada 2 vblanks: 48 → 24 FPS, 60 → 30 FPS, 90 → 45 FPS. La lógica del juego avanza por frame, por eso 45 FPS acelera el juego 1.5x.
+
+### Selector de idioma
+El disco NTSC-U (`default.xex` v9, SHA-1 `f7ad65e2…`) trae `eng`, `spa` y `fre` en `data/disc/dataRegion.cpk` (770 archivos por idioma) y `dlc.cpk` (39). En consola, el juego elige la carpeta según `XamGetLanguage`; el port siempre reporta inglés.
+
+Al tocar Jugar, `LangPatcher` reescribe **solo el TOC** (tabla `@UTF`) de esos CPK, para que las entradas `eng` apunten a los datos del idioma elegido (`FileOffset`, `FileSize` y `ExtractSize`). Los datos no se tocan. La primera vez guarda el TOC original en `getFilesDir()`, junto con el tamaño del CPK para detectar si cambiaste de archivo. Si encuentra un CPK ya redirigido y no tiene respaldo, se niega a modificarlo.
+
+### Herramienta para PC: `cpk-idioma/cpk_lang.py`
+Hace la misma redirección sin el APK. Sirve para cualquier emulador o port que use el disco NTSC-U:
 ```sh
 python cpk-idioma/cpk_lang.py dataRegion.cpk dataRegion_es.cpk --de eng --a spa
 python cpk-idioma/cpk_lang.py dlc.cpk dlc_es.cpk --de eng --a spa
 ```
+Si el CPK destino no trae el idioma, se le puede pasar como tercer argumento un CPK de otra región, y los textos se copian al final del archivo.
 
-Si el CPK destino no trae el idioma, se le puede pasar un CPK de otra región como tercer argumento para copiar esos textos.
-
-## Estado
-
-- El APK que genera el script es idéntico, byte a byte, al que se armó y verificó a mano.
+### Estado
+- El APK que genera el script es idéntico byte a byte al que se armó y verificó a mano.
 - El selector de idioma se probó en PC con los CPK reales: español, inglés (vuelve exactamente al original) y francés.
-- **Falta probarlo a fondo en dispositivos.** Si algo falla, abre un issue con el modelo del celular y el log ("Enviar log").
+- Falta probarlo a fondo en dispositivos.
+</details>
+
+---
 
 ## Aviso legal
 
-- No se distribuye el port ni el juego. Necesitas tu propio APK original y tu propia copia del juego.
-- La licencia MIT de este repo cubre solo el código propio de este repo.
+- Este repositorio **no distribuye** la app del autor ni archivos del juego. Necesitas tu propia copia del juego y descargar la app original desde el repo del autor.
+- La [licencia MIT](LICENSE) de este repositorio cubre **solo el código propio de este repositorio** (scripts, smali y Java). No cubre el port de Naruto Storm 3 Full Burst ni sus binarios, que pertenecen a su autor, ni el juego, que pertenece a sus titulares.
 - Si el autor del port pide retirar este parche, se retira.
