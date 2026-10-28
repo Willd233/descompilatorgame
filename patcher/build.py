@@ -3,10 +3,10 @@
 No incluye nada del port: toma el APK que el usuario bajo del repo del autor,
 lo desarma, aplica los cambios de este repo, lo vuelve a armar y lo firma.
 
-Uso:  python build.py <NarutoStorm3FullBurst-PortNativo-v0.3.1-arm64.apk> [-o salida.apk]
+Uso:  python build.py <NarutoStorm3FullBurst-PortNativo-v0.4.7-arm64.apk> [-o salida.apk]
 Requiere: JDK 17+ (java y javac en el PATH o en JAVA_HOME).
 """
-import argparse, hashlib, os, pathlib, shutil, subprocess, sys, urllib.request, zipfile
+import argparse, hashlib, os, pathlib, shutil, struct, subprocess, sys, urllib.request, zipfile
 
 import translate_es
 
@@ -14,7 +14,8 @@ HERE = pathlib.Path(__file__).resolve().parent
 TOOLS = HERE / ".tools"
 BUILD = HERE / "build"
 
-APK_SHA256 = "89fda15b1c4b0b5338ecc31d90655ea7b4f63a4dbcfaa327446b8078f29dc847"  # v0.3.1 arm64
+VERSION = "v0.5.4"
+APK_SHA256 = "563acc3dc264f156d45d95e8292fb778f70e73c13b5f84b9dda8b0f51aae623f"  # v0.5.4 arm64
 
 DOWNLOADS = {  # nombre: (url, algoritmo, hash)
     "apktool.jar": ("https://github.com/iBotPeaches/Apktool/releases/download/v3.0.3/apktool_3.0.3.jar",
@@ -25,42 +26,176 @@ DOWNLOADS = {  # nombre: (url, algoritmo, hash)
                "sha1", "bd7564f5058d382e9c488ed7d3140c13a2c50e86"),
 }
 
-LAUNCHER = "smali/com/naruto/port/LauncherActivity.smali"
-GAME = "smali/com/naruto/port/NarutoActivity.smali"
+LAUNCHER = "Lcom/naruto/port/LauncherActivity;"
+GAME = "Lcom/naruto/port/NarutoActivity;"
+CONTROLS = "La/g0;"        # capa de controles tactiles (botones en a:[La/d0;], seleccionado en p)
+FPS_LISTENER = "La/t;"     # listener de los selectores del menu (caso FPS)
+EMBLEM_MENU = "La/Z;"      # arma el menu del emblema del Shadow (dentro del juego)
+EMBLEM_CLICK = "La/Y;"     # atiende los toques de ese menu
 
-# (archivo, fragmento original exacto, reemplazo). Cada fragmento debe aparecer una sola vez.
+# (clase, fragmento original exacto, reemplazo). Cada fragmento debe aparecer una sola vez.
 EDITS = [
-    # aplicar el idioma elegido justo antes de lanzar el juego
+    # FPS: agregar 45 al selector del autor (etiquetas w y valores frame_rate x)
     (LAUNCHER,
-     ".method public final q()V\n    .locals 16\n\n    move-object/from16 v0, p0\n",
-     ".method public final q()V\n    .locals 16\n\n    move-object/from16 v0, p0\n\n"
+     '    const-string v0, "30"\n\n    const-string v1, "20"\n\n    const-string v2, "24"\n\n'
+     "    filled-new-array {v1, v2, v0}, [Ljava/lang/String;",
+     '    const-string v0, "30"\n\n    const-string v1, "20"\n\n    const-string v2, "24"\n\n'
+     '    const-string v3, "45"\n\n    filled-new-array {v1, v2, v0, v3}, [Ljava/lang/String;'),
+    (LAUNCHER,
+     '    const-string v0, "60"\n\n    const-string v1, "40"\n\n    const-string v2, "48"\n\n'
+     "    filled-new-array {v1, v2, v0}, [Ljava/lang/String;",
+     '    const-string v0, "60"\n\n    const-string v1, "40"\n\n    const-string v2, "48"\n\n'
+     '    const-string v3, "90"\n\n    filled-new-array {v1, v2, v0, v3}, [Ljava/lang/String;'),
+    # el indice de FPS se limitaba a 2 (tres opciones) en el menu y al lanzar el juego
+    (LAUNCHER,
+     "    move-result v5\n\n    invoke-static {v11, v5}, Ljava/lang/Math;->min(II)I",
+     "    move-result v5\n\n    const/4 v6, 0x3\n\n    invoke-static {v6, v5}, Ljava/lang/Math;->min(II)I"),
+    # al lanzar: v12 (valor por defecto) se reutiliza; v8 (las preferencias) se pisa con "frame_rate" despues
+    (LAUNCHER,
+     "    move-result v3\n\n    invoke-static {v12, v3}, Ljava/lang/Math;->min(II)I",
+     "    move-result v3\n\n    const/4 v8, 0x3\n\n    invoke-static {v8, v3}, Ljava/lang/Math;->min(II)I"),
+    # efecto de particulas del selector de FPS: 4 opciones en vez de 3
+    (FPS_LISTENER,
+     '    const-string v2, "menu_fps"\n\n'
+     "    invoke-interface {v1, v2, p1}, Landroid/content/SharedPreferences$Editor;->putInt(Ljava/lang/String;I)Landroid/content/SharedPreferences$Editor;\n\n"
+     "    move-result-object v1\n\n    invoke-interface {v1}, Landroid/content/SharedPreferences$Editor;->apply()V\n\n"
+     "    int-to-float v1, p1\n\n    const/high16 v2, 0x3f000000    # 0.5f\n\n    add-float/2addr v1, v2\n\n    const/4 v2, 0x3",
+     '    const-string v2, "menu_fps"\n\n'
+     "    invoke-interface {v1, v2, p1}, Landroid/content/SharedPreferences$Editor;->putInt(Ljava/lang/String;I)Landroid/content/SharedPreferences$Editor;\n\n"
+     "    move-result-object v1\n\n    invoke-interface {v1}, Landroid/content/SharedPreferences$Editor;->apply()V\n\n"
+     "    int-to-float v1, p1\n\n    const/high16 v2, 0x3f000000    # 0.5f\n\n    add-float/2addr v1, v2\n\n    const/4 v2, 0x4"),
+    # fila "Idioma del texto" debajo de Resolucion / FPS
+    (LAUNCHER,
+     "    :cond_c\n    invoke-virtual {v8, v2}, Landroid/view/ViewGroup;->addView(Landroid/view/View;)V\n",
+     "    :cond_c\n    invoke-virtual {v8, v2}, Landroid/view/ViewGroup;->addView(Landroid/view/View;)V\n\n"
+     "    invoke-virtual {v7, v8}, Lcom/naruto/port/LauncherActivity;->addLangRow(Landroid/view/ViewGroup;)V\n"),
+    # aplicar el idioma justo antes de lanzar el juego
+    (LAUNCHER,
+     ".method public final r()V\n    .locals 20\n\n    move-object/from16 v0, p0\n",
+     ".method public final r()V\n    .locals 20\n\n    move-object/from16 v0, p0\n\n"
      "    invoke-virtual {v0}, Lcom/naruto/port/LauncherActivity;->applyLanguage()V\n"),
-    # filas "FPS del juego" e "Idioma del texto" debajo de Pantalla / Antialiasing / Escala
+    # sin actualizacion automatica: instalaria el APK oficial, que tiene otra firma
     (LAUNCHER,
-     "    invoke-virtual {v0, v1}, Landroid/view/ViewGroup;->addView(Landroid/view/View;)V\n\n    new-instance v1, La/c;\n",
-     "    invoke-virtual {v0, v1}, Landroid/view/ViewGroup;->addView(Landroid/view/View;)V\n\n"
-     "    invoke-virtual {v7, v0}, Lcom/naruto/port/LauncherActivity;->addFpsRow(Landroid/view/ViewGroup;)V\n\n"
-     "    invoke-virtual {v7, v0}, Lcom/naruto/port/LauncherActivity;->addLangRow(Landroid/view/ViewGroup;)V\n\n"
-     "    new-instance v1, La/c;\n"),
-    # frame_rate (vblank) segun el FPS elegido, salvo con el modo rendimiento
+     '    const-string v0, "update check"\n\n'
+     "    invoke-direct {v1, v4, v0}, Ljava/lang/Thread;-><init>(Ljava/lang/Runnable;Ljava/lang/String;)V\n\n"
+     "    invoke-virtual {v1}, Ljava/lang/Thread;->start()V\n",
+     '    const-string v0, "update check"\n\n'
+     "    invoke-direct {v1, v4, v0}, Ljava/lang/Thread;-><init>(Ljava/lang/Runnable;Ljava/lang/String;)V\n"),
+    # menu del emblema: "Ocultar/Mostrar controles" (id 4, orden 2) y "Salir del juego" (id 3, orden 3)
+    (EMBLEM_MENU,
+     "    invoke-interface {p1, p2}, Landroid/view/MenuItem;->setChecked(Z)Landroid/view/MenuItem;\n\n"
+     "    new-instance p1, La/Y;\n",
+     "    invoke-interface {p1, p2}, Landroid/view/MenuItem;->setChecked(Z)Landroid/view/MenuItem;\n\n"
+     "    invoke-virtual {v3}, Landroid/view/View;->getContext()Landroid/content/Context;\n\n"
+     "    move-result-object p2\n\n    check-cast p2, Lcom/naruto/port/NarutoActivity;\n\n"
+     "    invoke-static {p2}, Lcom/naruto/port/NarutoActivity;->access$1100(Lcom/naruto/port/NarutoActivity;)La/g0;\n\n"
+     "    move-result-object p2\n\n    if-eqz p2, :cond_hide_item_end\n\n"
+     "    invoke-virtual {p2}, La/g0;->allOff()Z\n\n    move-result p2\n\n"
+     "    invoke-virtual {p0}, Landroid/widget/PopupMenu;->getMenu()Landroid/view/Menu;\n\n"
+     "    move-result-object p1\n\n    if-eqz p2, :cond_hide_item_label\n\n"
+     '    const-string v0, "Mostrar controles"\n\n    goto :goto_hide_item\n\n'
+     '    :cond_hide_item_label\n    const-string v0, "Ocultar controles"\n\n'
+     "    :goto_hide_item\n    const/4 p2, 0x4\n\n    const/4 v4, 0x2\n\n"
+     "    invoke-interface {p1, v1, p2, v4, v0}, Landroid/view/Menu;->add(IIILjava/lang/CharSequence;)Landroid/view/MenuItem;\n\n"
+     "    :cond_hide_item_end\n"
+     "    invoke-virtual {p0}, Landroid/widget/PopupMenu;->getMenu()Landroid/view/Menu;\n\n"
+     "    move-result-object p1\n\n    const/4 p2, 0x3\n\n"
+     '    const-string v0, "Salir del juego"\n\n'
+     "    invoke-interface {p1, v1, p2, p2, v0}, Landroid/view/Menu;->add(IIILjava/lang/CharSequence;)Landroid/view/MenuItem;\n\n"
+     "    new-instance p1, La/Y;\n"),
+    (EMBLEM_CLICK,
+     "    const/4 v0, 0x1\n\n    if-ne p1, v0, :cond_0\n",
+     "    const/4 v0, 0x1\n\n    const/4 v1, 0x4\n\n    if-ne p1, v1, :cond_hide_no\n\n"
+     "    invoke-virtual {p0}, Landroid/view/View;->getContext()Landroid/content/Context;\n\n"
+     "    move-result-object v1\n\n    check-cast v1, Lcom/naruto/port/NarutoActivity;\n\n"
+     "    invoke-static {v1}, Lcom/naruto/port/NarutoActivity;->access$1100(Lcom/naruto/port/NarutoActivity;)La/g0;\n\n"
+     "    move-result-object v1\n\n    if-eqz v1, :goto_1\n\n"
+     "    invoke-virtual {v1}, La/g0;->toggleAll()V\n\n    goto :goto_1\n\n"
+     "    :cond_hide_no\n    const/4 v1, 0x3\n\n    if-ne p1, v1, :cond_exit_no\n\n"
+     "    invoke-virtual {p0}, Landroid/view/View;->getContext()Landroid/content/Context;\n\n"
+     "    move-result-object v1\n\n    check-cast v1, Landroid/app/Activity;\n\n"
+     "    new-instance v2, Lcom/naruto/port/ExitHelper;\n\n"
+     "    invoke-direct {v2, v1}, Lcom/naruto/port/ExitHelper;-><init>(Landroid/app/Activity;)V\n\n"
+     "    invoke-virtual {v2, p0}, Lcom/naruto/port/ExitHelper;->onClick(Landroid/view/View;)V\n\n"
+     "    goto :goto_1\n\n    :cond_exit_no\n    if-ne p1, v0, :cond_0\n"),
+    # boton "Exportar" debajo de "Importar" en la fila del save
     (LAUNCHER,
-     '    :cond_6\n    const-string v6, "60"\n\n    :goto_5',
-     "    :cond_6\n    iget-object v6, v0, Lcom/naruto/port/LauncherActivity;->a:Landroid/content/SharedPreferences;\n\n"
-     "    invoke-static {v6}, Lcom/naruto/port/LauncherActivity;->fpsRate(Landroid/content/SharedPreferences;)Ljava/lang/String;\n\n"
-     "    move-result-object v6\n\n    :goto_5"),
-    # boton "Salir del juego" en el panel de la tuerca
+     "    invoke-virtual {v1, v3, v4}, Landroid/view/ViewGroup;->addView(Landroid/view/View;Landroid/view/ViewGroup$LayoutParams;)V\n\n"
+     '    const-string v4, "Save del juego"\n',
+     "    invoke-virtual {v7, v1, v3, v4, v5}, Lcom/naruto/port/LauncherActivity;->addSaveButtons("
+     "Landroid/widget/LinearLayout;Landroid/widget/TextView;Landroid/widget/LinearLayout$LayoutParams;I)V\n\n"
+     '    const-string v4, "Save del juego"\n'),
+    # el resultado de "Guardar como" (codigo 0x4e53) lo atiende handleSaveExport
+    (LAUNCHER,
+     ".method public final onActivityResult(IILandroid/content/Intent;)V\n    .locals 2\n\n"
+     "    invoke-super {p0, p1, p2, p3}, Landroid/app/Activity;->onActivityResult(IILandroid/content/Intent;)V\n",
+     ".method public final onActivityResult(IILandroid/content/Intent;)V\n    .locals 2\n\n"
+     "    invoke-super {p0, p1, p2, p3}, Landroid/app/Activity;->onActivityResult(IILandroid/content/Intent;)V\n\n"
+     "    invoke-virtual {p0, p1, p2, p3}, Lcom/naruto/port/LauncherActivity;->handleSaveExport(IILandroid/content/Intent;)Z\n\n"
+     "    move-result v0\n\n    if-eqz v0, :cond_not_export\n\n    return-void\n\n    :cond_not_export\n"),
+    # analogico ocultable: estado propio, guardado en las preferencias de los controles
+    (CONTROLS,
+     ".field public final a:[La/d0;\n",
+     ".field public analogOff:Z\n\n.field public final a:[La/d0;\n"),
+    (CONTROLS,
+     "    iput-object v1, v0, La/g0;->e:Landroid/content/SharedPreferences;\n\n"
+     "    invoke-virtual/range {p0 .. p0}, La/g0;->i()V\n",
+     "    iput-object v1, v0, La/g0;->e:Landroid/content/SharedPreferences;\n\n"
+     "    invoke-virtual/range {p0 .. p0}, La/g0;->i()V\n\n"
+     '    const-string v2, "analog_hidden"\n\n    const/4 v3, 0x0\n\n'
+     "    invoke-interface {v1, v2, v3}, Landroid/content/SharedPreferences;->getBoolean(Ljava/lang/String;Z)Z\n\n"
+     "    move-result v2\n\n    iput-boolean v2, v0, La/g0;->analogOff:Z\n"),
+    # con el analogico seleccionado en el editor, "Ocultar/Mostrar" ahora aplica a el
+    (CONTROLS,
+     '    const-string v0, "Anal\\u00f3gico"\n\n    iget p0, p0, La/g0;->h:F\n\n'
+     "    invoke-interface {v1, v0, p0, v2, v2}, La/e0;->a(Ljava/lang/String;FZZ)V\n",
+     '    const-string v0, "Anal\\u00f3gico"\n\n    iget-boolean v2, p0, La/g0;->analogOff:Z\n\n'
+     "    const/4 v3, 0x1\n\n    iget p0, p0, La/g0;->h:F\n\n"
+     "    invoke-interface {v1, v0, p0, v2, v3}, La/e0;->a(Ljava/lang/String;FZZ)V\n"),
+    # oculto: no se dibuja el joystick...
+    (CONTROLS,
+     "    :goto_3\n    invoke-virtual/range {p0 .. p1}, La/g0;->g(Landroid/graphics/Canvas;)V\n",
+     "    :goto_3\n    iget-boolean v2, v0, La/g0;->analogOff:Z\n\n    if-nez v2, :cond_analog_hidden\n\n"
+     "    invoke-virtual/range {p0 .. p1}, La/g0;->g(Landroid/graphics/Canvas;)V\n\n    :cond_analog_hidden\n"),
+    # ...y un toque en su zona no lo toma (queda como zona vacia)
+    (CONTROLS,
+     "    :cond_18\n    iget v13, v0, La/g0;->k:F\n",
+     "    :cond_18\n    iget-boolean v13, v0, La/g0;->analogOff:Z\n\n    if-nez v13, :cond_19\n\n"
+     "    iget v13, v0, La/g0;->k:F\n"),
+    # editor de botones: "Ocultar" sin seleccion oculta/muestra todos (antes quedaba desactivado)
     (GAME,
-     "    iput v2, v0, Landroid/widget/FrameLayout$LayoutParams;->topMargin:I\n\n"
-     "    iget-object v2, p0, Lcom/naruto/port/NarutoActivity;->editorPanel:Landroid/widget/LinearLayout;\n",
-     "    iput v2, v0, Landroid/widget/FrameLayout$LayoutParams;->topMargin:I\n\n"
-     "    invoke-direct {p0}, Lcom/naruto/port/NarutoActivity;->addExitButton()V\n\n"
-     "    iget-object v2, p0, Lcom/naruto/port/NarutoActivity;->editorPanel:Landroid/widget/LinearLayout;\n"),
+     "    iget-object p1, p0, Lcom/naruto/port/NarutoActivity;->controls:La/g0;\n\n"
+     "    iget-boolean p0, p0, Lcom/naruto/port/NarutoActivity;->selectionOff:Z\n\n"
+     "    xor-int/lit8 p0, p0, 0x1\n\n    invoke-virtual {p1, p0}, La/g0;->setSelectedOff(Z)V\n",
+     "    iget-object p1, p0, Lcom/naruto/port/NarutoActivity;->controls:La/g0;\n\n"
+     "    invoke-virtual {p1}, La/g0;->toggleHide()V\n"),
+    (GAME,
+     ".method private updateEditorPanel(Ljava/lang/String;FZZ)V\n    .locals 3\n",
+     ".method private updateEditorPanel(Ljava/lang/String;FZZ)V\n    .locals 5\n\n"
+     "    move-object v3, p0\n\n    move-object v4, p1\n"),
+    (GAME,
+     "    invoke-virtual {p0, p1}, Landroid/view/View;->setAlpha(F)V\n\n    return-void\n.end method",
+     "    invoke-virtual {p0, p1}, Landroid/view/View;->setAlpha(F)V\n\n"
+     "    if-nez v4, :cond_hide_end\n\n"
+     "    iget-object v1, v3, Lcom/naruto/port/NarutoActivity;->controls:La/g0;\n\n"
+     "    if-eqz v1, :cond_hide_end\n\n"
+     "    iget-object v0, v3, Lcom/naruto/port/NarutoActivity;->hideButton:Landroid/widget/TextView;\n\n"
+     "    const/4 v2, 0x1\n\n    invoke-virtual {v0, v2}, Landroid/widget/TextView;->setEnabled(Z)V\n\n"
+     "    const/high16 v2, 0x3f800000    # 1.0f\n\n    invoke-virtual {v0, v2}, Landroid/view/View;->setAlpha(F)V\n\n"
+     "    invoke-virtual {v1}, La/g0;->allOff()Z\n\n    move-result v1\n\n"
+     "    if-eqz v1, :cond_hide_all\n\n"
+     '    const-string v1, "Mostrar todos"\n\n    goto :goto_hide_text\n\n'
+     "    :cond_hide_all\n"
+     '    const-string v1, "Ocultar todos"\n\n'
+     "    :goto_hide_text\n"
+     "    invoke-virtual {v0, v1}, Landroid/widget/TextView;->setText(Ljava/lang/CharSequence;)V\n\n"
+     "    :cond_hide_end\n    return-void\n.end method"),
 ]
 
-# metodos nuevos: archivo destino -> (insertar antes de esta linea, bloque en smali_methods/)
+# metodos nuevos: clase -> (insertar antes de esta linea, bloque en smali_methods/)
 METHODS = {
     LAUNCHER: (".method public final c(Landroid/view/View;FI)V", "LauncherActivity.smali"),
-    GAME: (".method private dp(F)I", "NarutoActivity.smali"),
+    CONTROLS: (".method public setSelectedOff(Z)V", "Controls.smali"),
 }
 
 # textos del codigo nativo: mismo largo en bytes, para no mover nada en .rodata
@@ -68,7 +203,14 @@ NATIVE = {
     "\nCPU jogo %.0f%% (%.0f%% de %ld nucleos)": "\nCPU juego: %.0f%% (%.0f%% de %ld nucl.)",
     "O jogo encontrou um erro e vai fechar.\n\n": "El juego tuvo un error y ahora cierra.\n\n",
     "A pasta do jogo não tem o default.xex:\n": "A esta carpeta le falta el default.xex:\n",
+    "Este celular não roda o shadowZero (a GPU não tem o que ele precisa). Usando o Xenia.":
+        "Este celular no puede usar shadowZero: a su GPU le falta lo necesario. Se usa el Xenia.",
 }
+
+# El motor solo aceptaba frame_rate 40, 48, 60 o 120 (cualquier otro valor -> 60).
+# Se cambia el `csel` del filtro por `mov w8, w0` para que pase 90 (45 FPS); 120 sigue siendo el tope.
+FRAME_RATE_FILTER = [0x7100A01F, 0x52800608, 0x52800F09, 0x7A481004, 0x52800788, 0x1A880008, 0x7101E01F, 0x1A89B108]
+FRAME_RATE_FIX = (5, 0x2A0003E8)  # (posicion en la secuencia, instruccion nueva)
 
 
 def fail(msg):
@@ -115,23 +257,33 @@ def run(*cmd):
         fail(f"fallo: {' '.join(cmd[:3])}...\n{r.stdout}\n{r.stderr}")
 
 
+def class_files(app):
+    """descriptor de clase -> archivo .smali (el nombre del archivo cambia segun el sistema de archivos)."""
+    files = {}
+    for f in (app / "smali").rglob("*.smali"):
+        with open(f, encoding="utf-8") as fh:
+            files[fh.readline().split()[-1]] = f
+    return files
+
+
 def patch_smali(app):
     missing = translate_es.apply(app / "smali")
     if missing:
         fail(f"textos que no aparecieron en el APK (otra version?): {sorted(missing)[:3]}")
 
-    for rel, old, new in EDITS:
-        f = app / rel
+    files = class_files(app)
+    for cls, old, new in EDITS:
+        f = files[cls]
         text = f.read_text(encoding="utf-8")
         if text.count(old) != 1:
-            fail(f"el fragmento a parchear aparece {text.count(old)} veces en {rel}")
+            fail(f"el fragmento a parchear aparece {text.count(old)} veces en {cls}: {old.strip().splitlines()[0]!r}")
         f.write_text(text.replace(old, new), encoding="utf-8", newline="\n")
 
-    for rel, (anchor, block) in METHODS.items():
-        f = app / rel
+    for cls, (anchor, block) in METHODS.items():
+        f = files[cls]
         text = f.read_text(encoding="utf-8")
         if text.count(anchor) != 1:
-            fail(f"no encuentro '{anchor}' en {rel}")
+            fail(f"no encuentro '{anchor}' en {cls}")
         code = (HERE / "smali_methods" / block).read_text(encoding="utf-8")
         f.write_text(text.replace(anchor, code + anchor), encoding="utf-8", newline="\n")
 
@@ -149,14 +301,21 @@ def patch_native(app):
             fail(f"texto nativo no encontrado: {old.strip()!r}")
         i = data.index(key)
         data[i:i + len(o)] = n
+
+    seq = struct.pack(f"<{len(FRAME_RATE_FILTER)}I", *FRAME_RATE_FILTER)
+    if data.count(seq) != 1:
+        fail("no encuentro el filtro de frame_rate en libmain.so")
+    pos, insn = FRAME_RATE_FIX
+    struct.pack_into("<I", data, data.index(seq) + 4 * pos, insn)
     so.write_bytes(bytes(data))
 
 
-def build_lang_dex(java, javac):
+def build_java_dex(java, javac):
+    """Compila el codigo Java propio (idioma, exportar save) a un dex aparte."""
     classes, dex = BUILD / "classes", BUILD / "dex"
     for d in (classes, dex):
         d.mkdir(parents=True, exist_ok=True)
-    run(javac, "--release", "8", "-nowarn", "-d", str(classes), str(HERE / "java/com/naruto/port/LangPatcher.java"))
+    run(javac, "--release", "8", "-nowarn", "-d", str(classes), *map(str, (HERE / "java").rglob("*.java")))
     run(java, "-cp", tool("r8.jar"), "com.android.tools.r8.D8", "--release", "--min-api", "29",
         "--output", str(dex), *map(str, classes.rglob("*.class")))
     return dex / "classes.dex"
@@ -164,12 +323,12 @@ def build_lang_dex(java, javac):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("apk", help="APK original v0.3.1 arm64 del repo del autor")
-    ap.add_argument("-o", "--output", default="NarutoStorm3FullBurst-PortNativo-v0.3.1-arm64-mejoras.apk")
+    ap.add_argument("apk", help=f"APK original {VERSION} arm64 del repo del autor")
+    ap.add_argument("-o", "--output", default=f"NarutoStorm3FullBurst-PortNativo-{VERSION}-arm64-mejoras.apk")
     a = ap.parse_args()
 
     if digest(a.apk, "sha256") != APK_SHA256:
-        fail("ese APK no es el v0.3.1 arm64 original; este parche solo sirve para esa version exacta.")
+        fail(f"ese APK no es el {VERSION} arm64 original; este parche solo sirve para esa version exacta.")
     java, javac = jdk_tool("java"), jdk_tool("javac")
 
     shutil.rmtree(BUILD, ignore_errors=True)
@@ -183,9 +342,9 @@ def main():
     print("3/5 armando el APK...")
     unsigned = BUILD / "unsigned.apk"
     run(java, "-jar", tool("apktool.jar"), "b", str(app), "-o", str(unsigned))
-    print("4/5 compilando el selector de idioma...")
+    print("4/5 compilando el codigo Java (idioma y save)...")
     with zipfile.ZipFile(unsigned, "a", zipfile.ZIP_DEFLATED) as z:
-        z.write(build_lang_dex(java, javac), "classes2.dex")
+        z.write(build_java_dex(java, javac), "classes2.dex")
     print("5/5 firmando...")
     signed = BUILD / "signed"
     run(java, "-jar", tool("uber-apk-signer.jar"), "-a", str(unsigned), "-o", str(signed))

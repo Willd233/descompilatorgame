@@ -1,36 +1,3 @@
-.method public static fpsRate(Landroid/content/SharedPreferences;)Ljava/lang/String;
-    .locals 2
-
-    # vblank de la 360 simulada; el juego presenta 1 frame cada 2 vblanks
-    const-string v0, "menu_fps"
-
-    const/4 v1, 0x1
-
-    invoke-interface {p0, v0, v1}, Landroid/content/SharedPreferences;->getInt(Ljava/lang/String;I)I
-
-    move-result p0
-
-    if-eqz p0, :cond_0
-
-    const/4 v0, 0x2
-
-    if-eq p0, v0, :cond_1
-
-    const-string p0, "60"
-
-    return-object p0
-
-    :cond_0
-    const-string p0, "48"
-
-    return-object p0
-
-    :cond_1
-    const-string p0, "90"
-
-    return-object p0
-.end method
-
 .method public final applyLanguage()V
     .locals 4
 
@@ -91,17 +58,17 @@
 
     move-result v1
 
-    new-instance v2, La/S;
+    new-instance v2, La/X;
 
     const/4 v4, 0x0
 
-    invoke-direct {v2, p0, v0, v4, v1}, La/S;-><init>(Lcom/naruto/port/LauncherActivity;[Ljava/lang/String;[Ljava/lang/String;I)V
+    invoke-direct {v2, p0, v0, v4, v1}, La/X;-><init>(Lcom/naruto/port/LauncherActivity;[Ljava/lang/String;[Ljava/lang/String;I)V
 
-    invoke-virtual {v2, v3}, La/S;->setCompact(Z)V
+    invoke-virtual {v2, v3}, La/X;->setCompact(Z)V
 
     const-string v0, "Idioma del texto"
 
-    invoke-virtual {p0, v0, v2}, Lcom/naruto/port/LauncherActivity;->n(Ljava/lang/String;Landroid/view/View;)Landroid/widget/LinearLayout;
+    invoke-virtual {p0, v0, v2}, Lcom/naruto/port/LauncherActivity;->o(Ljava/lang/String;Landroid/view/View;)Landroid/widget/LinearLayout;
 
     move-result-object v0
 
@@ -109,7 +76,7 @@
 
     invoke-direct {v1, p0, v0}, Lcom/naruto/port/LangListener;-><init>(Lcom/naruto/port/LauncherActivity;Landroid/widget/LinearLayout;)V
 
-    invoke-virtual {v2, v1}, La/S;->setListener(La/Q;)V
+    invoke-virtual {v2, v1}, La/X;->setListener(La/W;)V
 
     new-array v1, v3, [Landroid/view/View;
 
@@ -124,59 +91,199 @@
     return-void
 .end method
 
-.method public final addFpsRow(Landroid/view/ViewGroup;)V
+.method public final addSaveButtons(Landroid/widget/LinearLayout;Landroid/widget/TextView;Landroid/widget/LinearLayout$LayoutParams;I)V
     .locals 5
 
-    const-string v0, "24 FPS"
+    # columna con "Importar" (el original) y "Exportar" debajo, mismo estilo y ancho
+    new-instance v0, Landroid/widget/LinearLayout;
 
-    const-string v1, "30 FPS"
+    invoke-direct {v0, p0}, Landroid/widget/LinearLayout;-><init>(Landroid/content/Context;)V
 
-    const-string v2, "45 FPS"
+    const/4 v1, 0x1
 
-    filled-new-array {v0, v1, v2}, [Ljava/lang/String;
+    invoke-virtual {v0, v1}, Landroid/widget/LinearLayout;->setOrientation(I)V
 
-    move-result-object v0
+    invoke-virtual {v0, p2, p3}, Landroid/view/ViewGroup;->addView(Landroid/view/View;Landroid/view/ViewGroup$LayoutParams;)V
 
-    iget-object v1, p0, Lcom/naruto/port/LauncherActivity;->a:Landroid/content/SharedPreferences;
+    const-string v1, "Exportar"
 
-    const-string v2, "menu_fps"
+    const v2, -0xa193c
 
-    const/4 v3, 0x1
+    invoke-virtual {p0, v1, v2, p4}, Lcom/naruto/port/LauncherActivity;->f(Ljava/lang/String;II)Landroid/widget/TextView;
 
-    invoke-interface {v1, v2, v3}, Landroid/content/SharedPreferences;->getInt(Ljava/lang/String;I)I
+    move-result-object v1
 
-    move-result v1
+    invoke-virtual {p2}, Landroid/widget/TextView;->getTextSize()F
 
-    new-instance v2, La/S;
+    move-result v2
 
-    const/4 v4, 0x0
+    const/4 v3, 0x0
 
-    invoke-direct {v2, p0, v0, v4, v1}, La/S;-><init>(Lcom/naruto/port/LauncherActivity;[Ljava/lang/String;[Ljava/lang/String;I)V
+    invoke-virtual {v1, v3, v2}, Landroid/widget/TextView;->setTextSize(IF)V
 
-    invoke-virtual {v2, v3}, La/S;->setCompact(Z)V
+    new-instance v2, Landroid/widget/LinearLayout$LayoutParams;
 
-    const-string v0, "FPS del juego"
+    invoke-direct {v2, p3}, Landroid/widget/LinearLayout$LayoutParams;-><init>(Landroid/widget/LinearLayout$LayoutParams;)V
 
-    invoke-virtual {p0, v0, v2}, Lcom/naruto/port/LauncherActivity;->n(Ljava/lang/String;Landroid/view/View;)Landroid/widget/LinearLayout;
+    const/high16 v3, 0x40c00000    # 6.0f
 
-    move-result-object v0
+    invoke-virtual {p0, v3}, Lcom/naruto/port/LauncherActivity;->b(F)I
 
-    new-instance v1, Lcom/naruto/port/FpsListener;
+    move-result v3
 
-    invoke-direct {v1, p0, v0}, Lcom/naruto/port/FpsListener;-><init>(Lcom/naruto/port/LauncherActivity;Landroid/widget/LinearLayout;)V
+    iput v3, v2, Landroid/view/ViewGroup$MarginLayoutParams;->topMargin:I
 
-    invoke-virtual {v2, v1}, La/S;->setListener(La/Q;)V
+    invoke-virtual {v0, v1, v2}, Landroid/view/ViewGroup;->addView(Landroid/view/View;Landroid/view/ViewGroup$LayoutParams;)V
 
-    new-array v1, v3, [Landroid/view/View;
+    new-instance v2, Lcom/naruto/port/SaveExportClick;
 
-    aput-object v0, v1, v4
+    invoke-direct {v2, p0}, Lcom/naruto/port/SaveExportClick;-><init>(Lcom/naruto/port/LauncherActivity;)V
 
-    invoke-virtual {p0, v1}, Lcom/naruto/port/LauncherActivity;->i([Landroid/view/View;)Landroid/widget/LinearLayout;
+    invoke-virtual {v1, v2}, Landroid/view/View;->setOnClickListener(Landroid/view/View$OnClickListener;)V
 
-    move-result-object v0
+    new-instance v2, Landroid/widget/LinearLayout$LayoutParams;
 
-    invoke-virtual {p1, v0}, Landroid/view/ViewGroup;->addView(Landroid/view/View;)V
+    const/4 v3, -0x2
+
+    invoke-direct {v2, v3, v3}, Landroid/widget/LinearLayout$LayoutParams;-><init>(II)V
+
+    invoke-virtual {p1, v0, v2}, Landroid/view/ViewGroup;->addView(Landroid/view/View;Landroid/view/ViewGroup$LayoutParams;)V
 
     return-void
+.end method
+
+.method public final startSaveExport()V
+    .locals 3
+
+    invoke-static {p0}, La/l;->d(Landroid/content/Context;)Ljava/io/File;
+
+    move-result-object v0
+
+    if-nez v0, :cond_0
+
+    const-string v0, "Todav\u00eda no hay save para exportar."
+
+    invoke-virtual {p0, v0}, Lcom/naruto/port/LauncherActivity;->j(Ljava/lang/String;)V
+
+    return-void
+
+    # "Guardar como" de Android: el usuario elige carpeta y nombre
+    :cond_0
+    new-instance v0, Landroid/content/Intent;
+
+    const-string v1, "android.intent.action.CREATE_DOCUMENT"
+
+    invoke-direct {v0, v1}, Landroid/content/Intent;-><init>(Ljava/lang/String;)V
+
+    const-string v1, "android.intent.category.OPENABLE"
+
+    invoke-virtual {v0, v1}, Landroid/content/Intent;->addCategory(Ljava/lang/String;)Landroid/content/Intent;
+
+    const-string v1, "application/octet-stream"
+
+    invoke-virtual {v0, v1}, Landroid/content/Intent;->setType(Ljava/lang/String;)Landroid/content/Intent;
+
+    const-string v1, "android.intent.extra.TITLE"
+
+    const-string v2, "STORM3FB.S"
+
+    invoke-virtual {v0, v1, v2}, Landroid/content/Intent;->putExtra(Ljava/lang/String;Ljava/lang/String;)Landroid/content/Intent;
+
+    const v1, 0x4e53
+
+    :try_start_0
+    invoke-virtual {p0, v0, v1}, Landroid/app/Activity;->startActivityForResult(Landroid/content/Intent;I)V
+    :try_end_0
+    .catch Landroid/content/ActivityNotFoundException; {:try_start_0 .. :try_end_0} :catch_0
+
+    return-void
+
+    :catch_0
+    move-exception v0
+
+    const-string v0, "No hay una app para guardar archivos en este celular."
+
+    invoke-virtual {p0, v0}, Lcom/naruto/port/LauncherActivity;->j(Ljava/lang/String;)V
+
+    return-void
+.end method
+
+.method public final handleSaveExport(IILandroid/content/Intent;)Z
+    .locals 4
+
+    const v0, 0x4e53
+
+    if-eq p1, v0, :cond_0
+
+    const/4 v0, 0x0
+
+    return v0
+
+    :cond_0
+    const/4 v0, -0x1
+
+    if-ne p2, v0, :cond_done
+
+    if-eqz p3, :cond_done
+
+    invoke-virtual {p3}, Landroid/content/Intent;->getData()Landroid/net/Uri;
+
+    move-result-object v0
+
+    if-eqz v0, :cond_done
+
+    invoke-static {p0}, La/l;->d(Landroid/content/Context;)Ljava/io/File;
+
+    move-result-object v1
+
+    if-nez v1, :cond_1
+
+    const-string v0, "Todav\u00eda no hay save para exportar."
+
+    goto :goto_msg
+
+    :cond_1
+    :try_start_0
+    invoke-virtual {p0}, Landroid/content/Context;->getContentResolver()Landroid/content/ContentResolver;
+
+    move-result-object v2
+
+    const-string v3, "wt"
+
+    invoke-virtual {v2, v0, v3}, Landroid/content/ContentResolver;->openOutputStream(Landroid/net/Uri;Ljava/lang/String;)Ljava/io/OutputStream;
+
+    move-result-object v2
+    :try_end_0
+    .catch Ljava/lang/Exception; {:try_start_0 .. :try_end_0} :catch_0
+
+    if-nez v2, :cond_2
+
+    const-string v0, "No se pudo abrir el destino."
+
+    goto :goto_msg
+
+    :cond_2
+    invoke-static {v1, v2}, Lcom/naruto/port/SaveExporter;->copy(Ljava/io/File;Ljava/io/OutputStream;)Ljava/lang/String;
+
+    move-result-object v0
+
+    if-nez v0, :goto_msg
+
+    const-string v0, "Save exportado: STORM3FB.S"
+
+    goto :goto_msg
+
+    :catch_0
+    move-exception v0
+
+    const-string v0, "No se pudo abrir el destino."
+
+    :goto_msg
+    invoke-virtual {p0, v0}, Lcom/naruto/port/LauncherActivity;->j(Ljava/lang/String;)V
+
+    :cond_done
+    const/4 v0, 0x1
+
+    return v0
 .end method
 

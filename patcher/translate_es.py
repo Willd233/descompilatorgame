@@ -14,8 +14,6 @@ ES = {
     "1080p · nítido: 720p com FXAA+ e FSR para a tela do celular, mais pesado (Sharingan).":
         "1080p · nítido: 720p con FXAA+ y FSR para la pantalla del celular, más pesado (Sharingan).",
     "16:9 · a imagem original, com barras nas laterais.": "16:9 · la imagen original, con barras a los lados.",
-    "24 FPS estáveis e mais leve. Ligue se o jogo não segura 30 FPS.":
-        "24 FPS estables y más liviano. Actívalo si el juego no aguanta 30 FPS.",
     "360p · +FPS: poucos pixels, o jogo roda muito mais leve (folhas ao vento).":
         "360p · +FPS: pocos píxeles, el juego corre mucho más liviano (hojas al viento).",
     "540p · leve: bom equilíbrio para celulares médios (shurikens voando).":
@@ -36,9 +34,7 @@ ES = {
         "Atención: el paquete es del título %08X, no del Storm 3 Full Burst (%08X).",
     "Atenção: o tamanho (": "Atención: el tamaño (",
     "CAS · realça contraste e detalhes.": "CAS · realza contraste y detalles.",
-    "CONFIRMA COM ○  (JAPÃO)": "CONFIRMA CON ○  (JAPÓN)",
     "Controle: ": "Control: ",
-    "Controles\nXbox 360 · PS3": "Controles\nXbox 360 · PS3",
     "Defesa (RT)": "Defensa (RT)",
     "Driver da GPU": "Driver de la GPU",
     "ESCOLHER PASTA": "ELEGIR CARPETA",
@@ -56,13 +52,8 @@ ES = {
     "FXAA · suaviza as bordas por quase nada de custo.": "FXAA · suaviza los bordes casi sin costo.",
     "FXAA+ · bordas melhores, um pouco mais pesado.": "FXAA+ · mejores bordes, un poco más pesado.",
     "Ferramentas (X)": "Herramientas (X)",
-    "GATILHOS ↔ OMBROS": "GATILLOS ↔ HOMBROS",
     "Importar save": "Importar save",
     "Itens (direcional)": "Objetos (cruceta)",
-    "Modo desempenho LIGADO: 24 FPS estáveis, 540p no máximo, sem suavização (Chidori!).":
-        "Modo rendimiento ACTIVADO: 24 FPS estables, 540p como máximo, sin suavizado (¡Chidori!).",
-    "Modo desempenho desligado: o jogo mira 30 FPS na resolução escolhida.":
-        "Modo rendimiento desactivado: el juego apunta a 30 FPS en la resolución elegida.",
     "Nenhum controle conectado. Ligue um pelo cabo ou Bluetooth.": "Ningún control conectado. Conecta uno por cable o Bluetooth.",
     "Nenhum save ainda": "Todavía no hay save",
     "Normal · escala simples da imagem para a tela.": "Normal · escalado simple de la imagen a la pantalla.",
@@ -71,8 +62,6 @@ ES = {
     "Não deu para instalar o driver: ": "No se pudo instalar el driver: ",
     "O jogo fechou com o driver ": "El juego se cerró con el driver ",
     "Off · sem suavização: mais leve, bordas serrilhadas.": "Off · sin suavizado: más liviano, bordes dentados.",
-    "PADRÃO  XBOX 360 · PS3": "POR DEFECTO  XBOX 360 · PS3",
-    "Painel de FPS": "Panel de FPS",
     "Painel de FPS desligado.": "Panel de FPS desactivado.",
     "Painel de FPS ligado: mostra FPS, CPU e RAM durante o jogo.": "Panel de FPS activado: muestra FPS, CPU y RAM durante el juego.",
     "Pausa (Start)": "Pausa (Start)",
@@ -102,7 +91,6 @@ ES = {
     "arquivo de save (": "archivo de save (",
     "arquivo grande demais para um save": "archivo demasiado grande para un save",
     "do .zip (": "del .zip (",
-    "mostra FPS, CPU e RAM": "muestra FPS, CPU y RAM",
     "não deu para abrir o arquivo": "no se pudo abrir el archivo",
     "não deu para criar ": "no se pudo crear ",
     "não foi possível criar a pasta do driver": "no se pudo crear la carpeta del driver",
@@ -115,8 +103,6 @@ ES = {
     "pacote do Xbox 360 cortado ou inválido": "paquete de Xbox 360 cortado o inválido",
     "padrão": "por defecto",
     "tamanho inválido no pacote: ": "tamaño inválido en el paquete: ",
-    "tudo liberado; o seu volta": "todo desbloqueado; el tuyo vuelve",
-    "⚡ MODO DESEMPENHO": "⚡ MODO RENDIMIENTO",
     "自来也 · O SANNIN LENDÁRIO": "自来也 · EL SANNIN LEGENDARIO",
     "Área do analógico": "Área del analógico",
     "Antisserrilhado": "Antialiasing",
@@ -124,12 +110,100 @@ ES = {
     "Esticar": "Estirar",
     "Fechar": "Cerrar",
     "Manter": "Mantener",
-    "Tamanho": "Tamaño",
     "Tela": "Pantalla",
     "Trocar": "Cambiar",
     "leve": "liviano",
     "Licenças": "Licencias",
     "Licenças de código aberto": "Licencias de código abierto",
+    # v0.4.x: shadowZero, brillo, controles nuevos y actualizador
+    "Limite de ": "Límite de ",
+    " FPS, fixo (20 e 24 deixam o aparelho folgado e estável; 30 é o padrão do jogo).":
+        " FPS, fijo (20 y 24 alivian el celular; 30 es la velocidad normal; 45 acelera el juego 1.5x).",
+    " O jogo pode abrir, mas com falhas de imagem ou travando.":
+        " El juego puede abrir, pero con fallas de imagen o trabándose.",
+    ") não tem os recursos de Vulkan que ele precisa. O jogo usa o Xenia.":
+        ") no tiene las funciones de Vulkan que necesita. El juego usa Xenia.",
+    ") não tem: ": ") no tiene: ",
+    ". Seus saves e configurações continuam.\n\n": ". Tus saves y tu configuración se mantienen.\n\n",
+    "1080p · nítido: 1920x1080 por dentro (2,25 vezes os pixels do 720p), bem mais pesado (Sharingan).":
+        "1080p · nítido: 1920x1080 internos (2,25 veces los píxeles de 720p), mucho más pesado (Sharingan).",
+    "2K · 2560x1440 por dentro (4 vezes os pixels do 720p): só para GPU forte.":
+        "2K · 2560x1440 internos (4 veces los píxeles de 720p): solo para GPU potente.",
+    "2K · neste aparelho o jogo usa o Xenia: fica em 720p com FXAA+ e FSR.":
+        "2K · en este celular el juego usa Xenia: queda en 720p con FXAA+ y FSR.",
+    "360p · +FPS: o jogo desenha 640x360 por dentro, bem mais leve para a GPU (folhas ao vento).":
+        "360p · +FPS: el juego dibuja 640x360 internos, mucho más liviano para la GPU (hojas al viento).",
+    "480p · leve: 853x480 por dentro, bom equilíbrio (shurikens voando).":
+        "480p · liviano: 853x480 internos, buen equilibrio (shurikens volando).",
+    "4K · 3840x2160 por dentro (9 vezes os pixels do 720p): pesadíssimo, só para testar.":
+        "4K · 3840x2160 internos (9 veces los píxeles de 720p): pesadísimo, solo para probar.",
+    "4K · neste aparelho o jogo usa o Xenia: fica em 720p com FXAA+ e FSR.":
+        "4K · en este celular el juego usa Xenia: queda en 720p con FXAA+ y FSR.",
+    "720p · padrão: a resolução original do jogo (Rasengan).":
+        "720p · por defecto: la resolución original del juego (Rasengan).",
+    ": clareia os tons médios, sem estourar o branco nem o preto.":
+        ": aclara los tonos medios, sin quemar el blanco ni el negro.",
+    "APOIO": "APOYO",
+    "AVANÇO": "AVANCE",
+    "Agora não": "Ahora no",
+    "Atualizar": "Actualizar",
+    "Atualização disponível: v": "Actualización disponible: v",
+    "Aviso sobre a GPU": "Aviso sobre la GPU",
+    "Aviso: sua GPU (": "Aviso: tu GPU (",
+    "Baixando a v": "Descargando la v",
+    "Baixando…": "Descargando…",
+    "Brilho": "Brillo",
+    "Brilho ": "Brillo ",
+    "Brilho Normal: igual ao jogo original (mais escuro).": "Brillo Normal: igual al juego original (más oscuro).",
+    "Criado por SHADOWll  ·  YouTube": "Creado por SHADOWll  ·  YouTube",
+    "DEFESA": "DEFENSA",
+    "Depois": "Después",
+    "Desempenho": "Rendimiento",
+    "Despertar (analógico direito para o lado)": "Despertar (analógico derecho hacia un lado)",
+    "Editar botões": "Editar botones",
+    "Este celular não roda o shadowZero: a GPU (": "Este celular no puede usar shadowZero: la GPU (",
+    "FERRAMENTA": "HERRAMIENTA",
+    "FPS, CPU e RAM": "FPS, CPU y RAM",
+    "JOGAR": "JUGAR",
+    "Menu (Back)": "Menú (Back)",
+    "Modo desempenho LIGADO: 480p no máximo, sem sombras e sem suavização (Chidori!).":
+        "Modo rendimiento ACTIVADO: 480p como máximo, sin sombras y sin suavizado (¡Chidori!).",
+    "Modo desempenho desligado: resolução e efeitos como escolhidos.":
+        "Modo rendimiento desactivado: resolución y efectos como los elegiste.",
+    "Não consegui abrir o YouTube": "No se pudo abrir YouTube",
+    "Não consegui ligar o Save 100%: ": "No se pudo activar el Save 100%: ",
+    "Não deu para abrir o instalador: ": "No se pudo abrir el instalador: ",
+    "Não deu para baixar a atualização: ": "No se pudo descargar la actualización: ",
+    "PULO": "SALTO",
+    "Painel FPS": "Panel FPS",
+    "Para instalar a atualização, o Android pede para permitir que este app instale apps. Ative a opção na próxima tela e volte.":
+        "Para instalar la actualización, Android pide permitir que esta app instale apps. Activa la opción en la siguiente pantalla y vuelve.",
+    "Permitir a instalação": "Permitir la instalación",
+    "Pular esta": "Saltar esta",
+    "SUBSTITUIÇÃO": "SUSTITUCIÓN",
+    "Só controle: os botões somem quando um controle é plugado.":
+        "Solo control: los botones desaparecen al conectar un control.",
+    "Tamanho de todos os botões (toque num botão para mudar só ele)":
+        "Tamaño de todos los botones (toca un botón para cambiar solo ese)",
+    "Tamanho: ": "Tamaño: ",
+    "Toque + controle": "Táctil + control",
+    "Toque + controle: os botões ficam na tela com o controle plugado.":
+        "Táctil + control: los botones quedan en pantalla con el control conectado.",
+    "VOLTAR": "VOLVER",
+    "Você tem a v": "Tienes la v",
+    "alvo de cor 16 bits float (brilho)": "destino de color de 16 bits float (brillo)",
+    "geometry shader (partes da imagem podem sumir)": "geometry shader (partes de la imagen pueden desaparecer)",
+    "o arquivo veio incompleto": "el archivo llegó incompleto",
+    "profundidade com stencil": "profundidad con stencil",
+    "shadowZero indisponível": "shadowZero no disponible",
+    "tudo liberado": "todo desbloqueado",
+    # v0.5.x: 900p, dos controles y modo rendimiento solo sin sombras
+    "900p · fino: 1600x900 por dentro (1,56 vez os pixels do 720p), quase o 1080p com folga na GPU (chakra).":
+        "900p · fino: 1600x900 internos (1,56 veces los píxeles de 720p), casi como 1080p con holgura en la GPU (chakra).",
+    "900p · neste aparelho o jogo usa o Xenia: fica em 720p.": "900p · en este celular el juego usa Xenia: queda en 720p.",
+    "CONTROLE 1": "CONTROL 1",
+    "CONTROLE 2": "CONTROL 2",
+    "sem sombras": "sin sombras",
 }
 
 LIT = re.compile(r'(const-string(?:/jumbo)? [vp]\d+, )"((?:[^"\\]|\\.)*)"')
