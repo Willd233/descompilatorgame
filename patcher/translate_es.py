@@ -1,7 +1,6 @@
 import sys, re, pathlib
 
 ES = {
-    "\nDriver: ": "\nDriver: ",
     "  •  toque para trocar": "  •  toca para cambiar",
     " (toque para trocar)": " (toca para cambiar)",
     " KB) é bem diferente do save atual (": " KB) es muy distinto del save actual (",
@@ -11,14 +10,7 @@ ES = {
     ")\nResolução: ": ")\nResolución: ",
     "+ Importar driver (.zip do AdrenoTools)": "+ Importar driver (.zip de AdrenoTools)",
     ", antisserrilhado: ": ", antialiasing: ",
-    "1080p · nítido: 720p com FXAA+ e FSR para a tela do celular, mais pesado (Sharingan).":
-        "1080p · nítido: 720p con FXAA+ y FSR para la pantalla del celular, más pesado (Sharingan).",
     "16:9 · a imagem original, com barras nas laterais.": "16:9 · la imagen original, con barras a los lados.",
-    "360p · +FPS: poucos pixels, o jogo roda muito mais leve (folhas ao vento).":
-        "360p · +FPS: pocos píxeles, el juego corre mucho más liviano (hojas al viento).",
-    "540p · leve: bom equilíbrio para celulares médios (shurikens voando).":
-        "540p · liviano: buen equilibrio para celulares de gama media (shurikens volando).",
-    "720p · padrão: a imagem original do jogo (Rasengan).": "720p · por defecto: la imagen original del juego (Rasengan).",
     "APERTE O BOTÃO…": "PRESIONA EL BOTÓN…",
     "Ainda não tem log: abra o jogo uma vez e tente de novo.": "Aún no hay log: abre el juego una vez e inténtalo de nuevo.",
     "Analógico": "Analógico",
@@ -33,7 +25,6 @@ ES = {
     "Atenção: o pacote é do título %08X, não do Storm 3 Full Burst (%08X).":
         "Atención: el paquete es del título %08X, no del Storm 3 Full Burst (%08X).",
     "Atenção: o tamanho (": "Atención: el tamaño (",
-    "CAS · realça contraste e detalhes.": "CAS · realza contraste y detalles.",
     "Controle: ": "Control: ",
     "Defesa (RT)": "Defensa (RT)",
     "Driver da GPU": "Driver de la GPU",
@@ -48,7 +39,6 @@ ES = {
         "Elige el save del Storm 3 Full Burst:\n\n• el paquete copiado del Xbox 360 (archivo STORM3FB.S, también de Horizon/Velocity);\n• el STORM3FB.S de Xenia (content/.../4E4D085C/00000001/);\n• o un .zip con alguno de ellos.\n\nAntes se copia el save actual a la carpeta save-backups.",
     "Escolher arquivo": "Elegir archivo",
     "Esticar · a imagem preenche a tela inteira.": "Estirar · la imagen llena toda la pantalla.",
-    "FSR · reescala com mais nitidez (pesa mais).": "FSR · reescala con más nitidez (pesa más).",
     "FXAA · suaviza as bordas por quase nada de custo.": "FXAA · suaviza los bordes casi sin costo.",
     "FXAA+ · bordas melhores, um pouco mais pesado.": "FXAA+ · mejores bordes, un poco más pesado.",
     "Ferramentas (X)": "Herramientas (X)",
@@ -84,8 +74,6 @@ ES = {
     "Suporte (RB)": "Soporte (RB)",
     "Toque em ESCOLHER PASTA e permita o acesso aos arquivos.": "Toca ELEGIR CARPETA y permite el acceso a los archivos.",
     "Toque numa ação e aperte o botão do controle que vai fazer isso.": "Toca una acción y presiona el botón del control que la hará.",
-    "Toque numa opção: cada uma faz um jutsu. ⚠ FXAA+, FSR e CAS pesam; se o FPS cair, use Off e Normal.":
-        "Toca una opción: cada una hace un jutsu. ⚠ FXAA+, FSR y CAS pesan; si bajan los FPS, usa Off y Normal.",
     "Transparência dos controles": "Transparencia de los controles",
     "Voltar para o sistema": "Volver al sistema",
     "arquivo de save (": "archivo de save (",
@@ -121,28 +109,20 @@ ES = {
         " FPS, fijo (20 y 24 alivian el celular; 30 es la velocidad normal; 45 acelera el juego 1.5x).",
     " O jogo pode abrir, mas com falhas de imagem ou travando.":
         " El juego puede abrir, pero con fallas de imagen o trabándose.",
-    ") não tem os recursos de Vulkan que ele precisa. O jogo usa o Xenia.":
-        ") no tiene las funciones de Vulkan que necesita. El juego usa Xenia.",
     ") não tem: ": ") no tiene: ",
     ". Seus saves e configurações continuam.\n\n": ". Tus saves y tu configuración se mantienen.\n\n",
     "1080p · nítido: 1920x1080 por dentro (2,25 vezes os pixels do 720p), bem mais pesado (Sharingan).":
         "1080p · nítido: 1920x1080 internos (2,25 veces los píxeles de 720p), mucho más pesado (Sharingan).",
     "2K · 2560x1440 por dentro (4 vezes os pixels do 720p): só para GPU forte.":
         "2K · 2560x1440 internos (4 veces los píxeles de 720p): solo para GPU potente.",
-    "2K · neste aparelho o jogo usa o Xenia: fica em 720p com FXAA+ e FSR.":
-        "2K · en este celular el juego usa Xenia: queda en 720p con FXAA+ y FSR.",
     "360p · +FPS: o jogo desenha 640x360 por dentro, bem mais leve para a GPU (folhas ao vento).":
         "360p · +FPS: el juego dibuja 640x360 internos, mucho más liviano para la GPU (hojas al viento).",
     "480p · leve: 853x480 por dentro, bom equilíbrio (shurikens voando).":
         "480p · liviano: 853x480 internos, buen equilibrio (shurikens volando).",
     "4K · 3840x2160 por dentro (9 vezes os pixels do 720p): pesadíssimo, só para testar.":
         "4K · 3840x2160 internos (9 veces los píxeles de 720p): pesadísimo, solo para probar.",
-    "4K · neste aparelho o jogo usa o Xenia: fica em 720p com FXAA+ e FSR.":
-        "4K · en este celular el juego usa Xenia: queda en 720p con FXAA+ y FSR.",
     "720p · padrão: a resolução original do jogo (Rasengan).":
         "720p · por defecto: la resolución original del juego (Rasengan).",
-    ": clareia os tons médios, sem estourar o branco nem o preto.":
-        ": aclara los tonos medios, sin quemar el blanco ni el negro.",
     "APOIO": "APOYO",
     "AVANÇO": "AVANCE",
     "Agora não": "Ahora no",
@@ -152,16 +132,12 @@ ES = {
     "Aviso: sua GPU (": "Aviso: tu GPU (",
     "Baixando a v": "Descargando la v",
     "Baixando…": "Descargando…",
-    "Brilho": "Brillo",
-    "Brilho ": "Brillo ",
-    "Brilho Normal: igual ao jogo original (mais escuro).": "Brillo Normal: igual al juego original (más oscuro).",
     "Criado por SHADOWll  ·  YouTube": "Creado por SHADOWll  ·  YouTube",
     "DEFESA": "DEFENSA",
     "Depois": "Después",
     "Desempenho": "Rendimiento",
     "Despertar (analógico direito para o lado)": "Despertar (analógico derecho hacia un lado)",
     "Editar botões": "Editar botones",
-    "Este celular não roda o shadowZero: a GPU (": "Este celular no puede usar shadowZero: la GPU (",
     "FERRAMENTA": "HERRAMIENTA",
     "FPS, CPU e RAM": "FPS, CPU y RAM",
     "JOGAR": "JUGAR",
@@ -195,15 +171,47 @@ ES = {
     "geometry shader (partes da imagem podem sumir)": "geometry shader (partes de la imagen pueden desaparecer)",
     "o arquivo veio incompleto": "el archivo llegó incompleto",
     "profundidade com stencil": "profundidad con stencil",
-    "shadowZero indisponível": "shadowZero no disponible",
     "tudo liberado": "todo desbloqueado",
     # v0.5.x: 900p, dos controles y modo rendimiento solo sin sombras
     "900p · fino: 1600x900 por dentro (1,56 vez os pixels do 720p), quase o 1080p com folga na GPU (chakra).":
         "900p · fino: 1600x900 internos (1,56 veces los píxeles de 720p), casi como 1080p con holgura en la GPU (chakra).",
-    "900p · neste aparelho o jogo usa o Xenia: fica em 720p.": "900p · en este celular el juego usa Xenia: queda en 720p.",
     "CONTROLE 1": "CONTROL 1",
     "CONTROLE 2": "CONTROL 2",
     "sem sombras": "sin sombras",
+    # v0.6.x: emblema nuevo, nitidez/FSR, PT-BR, shaders y celulares no compatibles
+    " (buffer device address, do Vulkan 1.2)": " (buffer device address, de Vulkan 1.2)",
+    " (indexação de descritores, do Vulkan 1.2)": " (indexación de descriptores, de Vulkan 1.2)",
+    ") não tem o que o renderizador do jogo precisa": ") no tiene lo que necesita el renderizador del juego",
+    ", então o jogo não roda nele por enquanto.\n\nMande o log para o Shadow: ele diz exatamente o que falta e ajuda a fazer o jogo funcionar em mais celulares.":
+        ", así que el juego todavía no funciona en él.\n\nMándale el log a Shadow: dice exactamente qué falta y ayuda a que el juego funcione en más celulares.",
+    "A GPU deste celular (": "La GPU de este celular (",
+    "Abrir o grupo do Shadow: t.me/shadowll_Ports": "Abrir el grupo de Shadow: t.me/shadowll_Ports",
+    "Baixa": "Baja",
+    "Média": "Media",
+    "Celular não suportado": "Celular no compatible",
+    "ENVIAR LOG PARA O SHADOW": "ENVIAR LOG A SHADOW",
+    "FSR · o upscaler da AMD aumenta a imagem acompanhando as bordas. Mais nítido, mas pesa em celular médio.":
+        "FSR · el upscaler de AMD agranda la imagen siguiendo los bordes. Más nítido, pero pesa en celulares de gama media.",
+    "Nitidez alta: o máximo de detalhe; pode realçar o serrilhado.": "Nitidez alta: el máximo detalle; puede resaltar los bordes dentados.",
+    "Nitidez baixa: realça um pouco as bordas e os textos.": "Nitidez baja: realza un poco los bordes y los textos.",
+    "Nitidez desligada: a imagem como sai do jogo.": "Nitidez desactivada: la imagen tal como sale del juego.",
+    "Nitidez média: bordas e cenário mais definidos, sem halos.": "Nitidez media: bordes y escenario más definidos, sin halos.",
+    "No Telegram, escolha o grupo do Shadow (shadowll Ports).": "En Telegram, elige el grupo de Shadow (shadowll Ports).",
+    "Ocultar o Shadow": "Ocultar a Shadow",
+    "PT-BR desligado: o jogo em inglês.": "PT-BR desactivado: el juego en inglés.",
+    "PT-BR ligado: menus e legendas em português (o console fica em português para o jogo).":
+        "PT-BR activado: menús y subtítulos en portugués (la consola queda en portugués para el juego).",
+    "Shadow de volta.": "Shadow de vuelta.",
+    "Shadow oculto. Toque no mesmo cantinho para ele voltar.": "Shadow oculto. Toca el mismo rincón para que vuelva.",
+    "Só na primeira vez (e depois de atualizar o jogo ou trocar o driver).\nAssim o jogo roda sem engasgos desde o começo.":
+        "Solo la primera vez (y después de actualizar el juego o cambiar el driver).\nAsí el juego corre sin trabones desde el principio.",
+    "Tela 16:9: a imagem inteira na proporção certa, com barras.": "Pantalla 16:9: la imagen completa en la proporción correcta, con barras.",
+    "Tela esticada: a imagem ocupa a tela toda.": "Pantalla estirada: la imagen ocupa toda la pantalla.",
+    "Tela: 16:9": "Pantalla: 16:9",
+    "Tela: esticar": "Pantalla: estirar",
+    "Toque numa opção: cada uma faz um jutsu. ⚠ FXAA+, FSR e Nitidez pesam; se o FPS cair, use Off e Normal.":
+        "Toca una opción: cada una hace un jutsu. ⚠ FXAA+, FSR y Nitidez pesan; si bajan los FPS, usa Off y Normal.",
+    "textos em português": "textos en portugués",
 }
 
 LIT = re.compile(r'(const-string(?:/jumbo)? [vp]\d+, )"((?:[^"\\]|\\.)*)"')

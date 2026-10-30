@@ -3,7 +3,7 @@
 .source "SourceFile"
 
 # interfaces
-.implements La/W;
+.implements @SEL_LIS@
 
 
 # instance fields
@@ -48,11 +48,11 @@
 
     iget-object v1, p0, Lcom/naruto/port/LangListener;->b:Landroid/widget/LinearLayout;
 
-    invoke-static {v1}, Lcom/naruto/port/LauncherActivity;->g(Landroid/view/View;)V
+    invoke-static {v1}, Lcom/naruto/port/LauncherActivity;->@PULSE@(Landroid/view/View;)V
 
     const-string v1, "Se aplica al tocar Jugar. Solo cambia los textos; las voces quedan igual."
 
-    invoke-virtual {v0, v1}, Lcom/naruto/port/LauncherActivity;->j(Ljava/lang/String;)V
+    invoke-virtual {v0, v1}, Lcom/naruto/port/LauncherActivity;->@TOAST@(Ljava/lang/String;)V
 
     return-void
 .end method

@@ -9,14 +9,14 @@ Parche **no oficial** para el [port nativo de Naruto Shippuden: Ultimate Ninja S
 | Mejora | Qué vas a ver |
 |---|---|
 | **App en español** | Todos los menús y avisos de la app, que venían en portugués. |
-| **Idioma del juego** | Opción **"Idioma del texto": English · Español · Français**. El juego americano ya traía español, pero la app siempre lo mostraba en inglés. |
+| **Idioma del juego** | Opción **"Idioma del texto": English · Español · Français · Português**. El disco americano trae los cuatro. Reemplaza al interruptor PT-BR de la app original: Português usa su mismo mecanismo y los demás redirigen los archivos de texto del juego. |
 | **45 FPS** | El selector **FPS** de la app (20 · 24 · 30) suma la opción **45**. Usa **30** para jugar normal: 45 se ve más fluido, pero el juego va **1.5x más rápido**. |
 | **Salir del juego** | Dentro del juego, al tocar el **emblema** (el ícono de Shadow), aparece **"Salir del juego"**. |
 | **Ocultar los controles** | **Emblema → "Ocultar controles"** oculta de un toque todos los botones táctiles **y el analógico** (como el ícono de la v0.3.1); **"Mostrar controles"** los devuelve. Deslizar para mover la cámara sigue funcionando. En **Editar botones** también está **"Ocultar todos"** sin selección, o "Ocultar" para uno solo (ahora también el analógico). Lo oculto no responde al toque. |
 | **Exportar el save** | En **"Save del juego"**, debajo de **Importar**, el botón **"Exportar"** guarda una copia de tu partida (`STORM3FB.S`) donde elijas: Descargas, Google Drive, etc. Sirve como respaldo o para pasarla a otro celular. |
 | **Sin actualización automática** | La app original busca versiones nuevas e intenta instalar la oficial, que tiene otra firma y no se puede instalar encima. Aquí está desactivado: actualiza con este repo. |
 
-Basado en la app original **v0.5.4**.
+Basado en la app original **v0.6.10**.
 
 ---
 
@@ -63,12 +63,12 @@ El programa que aplica las mejoras necesita **Python** y **Java (JDK)**. Se inst
 ## Paso 3. Descarga la app original
 
 1. Entra a la página de descargas del autor: https://github.com/Masterllgod/naruto-storm-3-full-burst-port-nativo/releases
-2. En la versión **v0.5.4**, descarga **`NarutoStorm3FullBurst-PortNativo-v0.5.4-arm64.apk`**.
+2. En la versión **v0.6.10**, descarga **`NarutoStorm3FullBurst-PortNativo-v0.6.10-arm64.apk`**.
 3. Déjalo en tu carpeta **Descargas**.
 
 > Solo sirve **ese archivo exacto**. El programa lo comprueba solo y te avisa si es otro.
 
-> ⚠️ **Bájalo solo de esa página.** Circulan copias reempaquetadas de la app (por ejemplo `Naruto-Storm-3-FB-v0.5.4.apk`, 22.6 MB) con un **menú de trucos inyectado y código ofuscado** de un tercero. No son del autor y no se puede saber qué más hacen.
+> ⚠️ **Bájalo solo de esa página.** Circulan copias reempaquetadas de la app (por ejemplo `Naruto-Storm-3-FB-v0.6.10.apk`, 22.6 MB) con un **menú de trucos inyectado y código ofuscado** de un tercero. No son del autor y no se puede saber qué más hacen.
 
 ## Paso 4. Descarga este repositorio
 
@@ -82,7 +82,7 @@ El programa que aplica las mejoras necesita **Python** y **Java (JDK)**. Se inst
 2. Copia este comando, pégalo en la ventana negra (clic derecho pega) y presiona **Enter**:
 
    ```
-   python patcher\build.py "%USERPROFILE%\Downloads\NarutoStorm3FullBurst-PortNativo-v0.5.4-arm64.apk"
+   python patcher\build.py "%USERPROFILE%\Downloads\NarutoStorm3FullBurst-PortNativo-v0.6.10-arm64.apk"
    ```
 
 3. Espera de 1 a 3 minutos. La primera vez descarga unas herramientas (unos 25 MB). Debe verse algo así:
@@ -96,16 +96,16 @@ El programa que aplica las mejoras necesita **Python** y **Java (JDK)**. Se inst
    descargando r8.jar...
    5/5 firmando...
    descargando uber-apk-signer.jar...
-   listo: NarutoStorm3FullBurst-PortNativo-v0.5.4-arm64-mejoras.apk
+   listo: NarutoStorm3FullBurst-PortNativo-v0.6.10-arm64-mejoras.apk
    ```
 
-4. Cuando diga **`listo`**, en la carpeta `descompilatorgame-main` aparece el archivo **`NarutoStorm3FullBurst-PortNativo-v0.5.4-arm64-mejoras.apk`**. Esa es tu app mejorada.
+4. Cuando diga **`listo`**, en la carpeta `descompilatorgame-main` aparece el archivo **`NarutoStorm3FullBurst-PortNativo-v0.6.10-arm64-mejoras.apk`**. Esa es tu app mejorada.
 
 > Si aparece una línea que empieza con **`ERROR:`**, mira [Problemas comunes](#problemas-comunes).
 
 ## Paso 6. Instala la app mejorada en el celular
 
-1. Con el celular conectado por USB (en "Transferencia de archivos"), copia `NarutoStorm3FullBurst-PortNativo-v0.5.4-arm64-mejoras.apk` a la carpeta **Download** del celular. También puedes mandártelo por Google Drive o Telegram.
+1. Con el celular conectado por USB (en "Transferencia de archivos"), copia `NarutoStorm3FullBurst-PortNativo-v0.6.10-arm64-mejoras.apk` a la carpeta **Download** del celular. También puedes mandártelo por Google Drive o Telegram.
 2. **Desinstala la app original:** en el celular, mantén presionado el ícono de la app → **Desinstalar**. (Ya respaldaste tu partida en el Paso 1.)
    > Si ya tenías instalada una versión anterior **hecha con este repo**, no hace falta desinstalar: la nueva se instala encima y conserva tus partidas.
 3. Abre la app **Archivos** (o "Mis archivos") del celular, entra a **Download** y toca el archivo `...-mejoras.apk`.
@@ -138,7 +138,7 @@ El programa que aplica las mejoras necesita **Python** y **Java (JDK)**. Se inst
 | `"python" no se reconoce como un comando` | Reinstala Python marcando **"Add python.exe to PATH"** (Paso 2). Como alternativa, usa `py` en lugar de `python` en el comando del Paso 5. |
 | Se abre la **Microsoft Store** al escribir `python` | Python no quedó instalado o no está en el PATH. Repite la instalación del Paso 2. |
 | `ERROR: no encuentro 'javac'` | Instalaste solo Java (JRE) o no se configuró `JAVA_HOME`. Instala el **JDK 21 `.msi`** del Paso 2 activando **"Set JAVA_HOME variable"**, cierra la ventana negra y abre una nueva. |
-| `ERROR: ese APK no es el v0.5.4 arm64 original` | El archivo no es el correcto, o está incompleto. Descárgalo de nuevo desde el Paso 3, sin renombrarlo ni modificarlo. |
+| `ERROR: ese APK no es el v0.6.10 arm64 original` | El archivo no es el correcto, o está incompleto. Descárgalo de nuevo desde el Paso 3, sin renombrarlo ni modificarlo. |
 | `ERROR: ... no coincide con el hash esperado` | Una descarga de herramientas salió mal (internet inestable). Ejecuta el mismo comando otra vez. |
 | `ERROR: no se pudo descargar` / error de conexión | Revisa tu internet o el antivirus/firewall y vuelve a intentar. |
 | En el celular: **"App no instalada"** | Seguramente la app original sigue instalada. Desinstálala (Paso 6.2) y vuelve a instalar. |
@@ -155,7 +155,7 @@ Todo es igual, salvo los Pasos 2, 4 y 5:
 - **Paso 4:** extrae el ZIP con doble clic.
 - **Paso 5:** abre una terminal en la carpeta extraída y ejecuta:
   ```sh
-  python3 patcher/build.py ~/Downloads/NarutoStorm3FullBurst-PortNativo-v0.5.4-arm64.apk
+  python3 patcher/build.py ~/Downloads/NarutoStorm3FullBurst-PortNativo-v0.6.10-arm64.apk
   ```
 
 ---
@@ -166,7 +166,7 @@ Todo es igual, salvo los Pasos 2, 4 y 5:
 <summary>Cómo funciona por dentro (para desarrolladores)</summary>
 
 ### El parche (`patcher/build.py`)
-1. Comprueba el SHA-256 del APK original (`563acc3dc264f156d45d95e8292fb778f70e73c13b5f84b9dda8b0f51aae623f`, v0.5.4 arm64).
+1. Comprueba el SHA-256 del APK original (`74d6973ffe3c1a32d9ec1edb341aa1427b8086850fe3df17b902e3816e6c7f08`, v0.6.10 arm64).
 2. Descarga apktool 3.0.3, uber-apk-signer 1.3.0 y D8 (R8 8.13.25) desde sus fuentes oficiales y verifica sus hashes.
 3. Desarma el APK (`apktool d -r`), traduce los `const-string` PT→ES ([translate_es.py](patcher/translate_es.py)) y aplica los cambios al smali. Cada cambio exige encontrar su fragmento exacto **una sola vez**; si no lo encuentra, se detiene en vez de parchear a ciegas.
 4. Reemplaza 4 textos del motor en `libmain.so` por traducciones del **mismo largo en bytes**, para no mover nada en `.rodata`, y quita el filtro de `frame_rate` (ver abajo). Los parches nativos se buscan por contenido, no por dirección.

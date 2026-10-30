@@ -1,5 +1,5 @@
 .method public final applyLanguage()V
-    .locals 4
+    .locals 6
 
     iget-object v0, p0, Lcom/naruto/port/LauncherActivity;->a:Landroid/content/SharedPreferences;
 
@@ -19,6 +19,32 @@
 
     move-result v2
 
+    # 3 = Portugues: lo resuelve el motor del autor (idioma de consola, preferencia menu_ptbr) y
+    # los CPK quedan originales. Los demas idiomas los resuelve el indice de los CPK.
+    const/4 v3, 0x3
+
+    if-ne v2, v3, :cond_not_pt
+
+    const/4 v3, 0x1
+
+    goto :goto_pt
+
+    :cond_not_pt
+    const/4 v3, 0x0
+
+    :goto_pt
+    invoke-interface {v0}, Landroid/content/SharedPreferences;->edit()Landroid/content/SharedPreferences$Editor;
+
+    move-result-object v4
+
+    const-string v5, "menu_ptbr"
+
+    invoke-interface {v4, v5, v3}, Landroid/content/SharedPreferences$Editor;->putBoolean(Ljava/lang/String;Z)Landroid/content/SharedPreferences$Editor;
+
+    move-result-object v4
+
+    invoke-interface {v4}, Landroid/content/SharedPreferences$Editor;->apply()V
+
     invoke-virtual {p0}, Landroid/content/Context;->getFilesDir()Ljava/io/File;
 
     move-result-object v3
@@ -29,7 +55,7 @@
 
     if-eqz v0, :cond_0
 
-    invoke-virtual {p0, v0}, Lcom/naruto/port/LauncherActivity;->j(Ljava/lang/String;)V
+    invoke-virtual {p0, v0}, Lcom/naruto/port/LauncherActivity;->@TOAST@(Ljava/lang/String;)V
 
     :cond_0
     return-void
@@ -44,7 +70,9 @@
 
     const-string v2, "Français"
 
-    filled-new-array {v0, v1, v2}, [Ljava/lang/String;
+    const-string v3, "Português"
+
+    filled-new-array {v0, v1, v2, v3}, [Ljava/lang/String;
 
     move-result-object v0
 
@@ -58,17 +86,17 @@
 
     move-result v1
 
-    new-instance v2, La/X;
+    new-instance v2, @SEL@
 
     const/4 v4, 0x0
 
-    invoke-direct {v2, p0, v0, v4, v1}, La/X;-><init>(Lcom/naruto/port/LauncherActivity;[Ljava/lang/String;[Ljava/lang/String;I)V
+    invoke-direct {v2, p0, v0, v4, v1}, @SEL@-><init>(Lcom/naruto/port/LauncherActivity;[Ljava/lang/String;[Ljava/lang/String;I)V
 
-    invoke-virtual {v2, v3}, La/X;->setCompact(Z)V
+    invoke-virtual {v2, v3}, @SEL@->setCompact(Z)V
 
     const-string v0, "Idioma del texto"
 
-    invoke-virtual {p0, v0, v2}, Lcom/naruto/port/LauncherActivity;->o(Ljava/lang/String;Landroid/view/View;)Landroid/widget/LinearLayout;
+    invoke-virtual {p0, v0, v2}, Lcom/naruto/port/LauncherActivity;->@ROW@(Ljava/lang/String;Landroid/view/View;)Landroid/widget/LinearLayout;
 
     move-result-object v0
 
@@ -76,13 +104,13 @@
 
     invoke-direct {v1, p0, v0}, Lcom/naruto/port/LangListener;-><init>(Lcom/naruto/port/LauncherActivity;Landroid/widget/LinearLayout;)V
 
-    invoke-virtual {v2, v1}, La/X;->setListener(La/W;)V
+    invoke-virtual {v2, v1}, @SEL@->setListener(@SEL_LIS@)V
 
     new-array v1, v3, [Landroid/view/View;
 
     aput-object v0, v1, v4
 
-    invoke-virtual {p0, v1}, Lcom/naruto/port/LauncherActivity;->i([Landroid/view/View;)Landroid/widget/LinearLayout;
+    invoke-virtual {p0, v1}, Lcom/naruto/port/LauncherActivity;->@WRAP@([Landroid/view/View;)Landroid/widget/LinearLayout;
 
     move-result-object v0
 
@@ -109,7 +137,7 @@
 
     const v2, -0xa193c
 
-    invoke-virtual {p0, v1, v2, p4}, Lcom/naruto/port/LauncherActivity;->f(Ljava/lang/String;II)Landroid/widget/TextView;
+    invoke-virtual {p0, v1, v2, p4}, Lcom/naruto/port/LauncherActivity;->@BTN@(Ljava/lang/String;II)Landroid/widget/TextView;
 
     move-result-object v1
 
@@ -127,7 +155,7 @@
 
     const/high16 v3, 0x40c00000    # 6.0f
 
-    invoke-virtual {p0, v3}, Lcom/naruto/port/LauncherActivity;->b(F)I
+    invoke-virtual {p0, v3}, Lcom/naruto/port/LauncherActivity;->@DP@(F)I
 
     move-result v3
 
@@ -163,7 +191,7 @@
 
     const-string v0, "Todav\u00eda no hay save para exportar."
 
-    invoke-virtual {p0, v0}, Lcom/naruto/port/LauncherActivity;->j(Ljava/lang/String;)V
+    invoke-virtual {p0, v0}, Lcom/naruto/port/LauncherActivity;->@TOAST@(Ljava/lang/String;)V
 
     return-void
 
@@ -203,7 +231,7 @@
 
     const-string v0, "No hay una app para guardar archivos en este celular."
 
-    invoke-virtual {p0, v0}, Lcom/naruto/port/LauncherActivity;->j(Ljava/lang/String;)V
+    invoke-virtual {p0, v0}, Lcom/naruto/port/LauncherActivity;->@TOAST@(Ljava/lang/String;)V
 
     return-void
 .end method
@@ -279,7 +307,7 @@
     const-string v0, "No se pudo abrir el destino."
 
     :goto_msg
-    invoke-virtual {p0, v0}, Lcom/naruto/port/LauncherActivity;->j(Ljava/lang/String;)V
+    invoke-virtual {p0, v0}, Lcom/naruto/port/LauncherActivity;->@TOAST@(Ljava/lang/String;)V
 
     :cond_done
     const/4 v0, 0x1

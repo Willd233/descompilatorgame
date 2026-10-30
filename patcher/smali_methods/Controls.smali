@@ -1,11 +1,11 @@
 .method public final allOff()Z
     .locals 4
 
-    iget-boolean v0, p0, La/g0;->analogOff:Z
+    iget-boolean v0, p0, @CTRL@->analogOff:Z
 
     if-eqz v0, :cond_2
 
-    iget-object v0, p0, La/g0;->a:[La/d0;
+    iget-object v0, p0, @CTRL@->a:[@BTN_CLS@
 
     array-length v1, v0
 
@@ -16,7 +16,7 @@
 
     aget-object v3, v0, v2
 
-    iget-boolean v3, v3, La/d0;->p:Z
+    iget-boolean v3, v3, @BTN_CLS@->p:Z
 
     if-nez v3, :cond_0
 
@@ -39,9 +39,9 @@
 .method public final setAnalogOff(Z)V
     .locals 2
 
-    iput-boolean p1, p0, La/g0;->analogOff:Z
+    iput-boolean p1, p0, @CTRL@->analogOff:Z
 
-    iget-object v0, p0, La/g0;->e:Landroid/content/SharedPreferences;
+    iget-object v0, p0, @CTRL@->e:Landroid/content/SharedPreferences;
 
     invoke-interface {v0}, Landroid/content/SharedPreferences;->edit()Landroid/content/SharedPreferences$Editor;
 
@@ -62,40 +62,40 @@
     .locals 5
 
     # analogico seleccionado: solo el
-    iget-boolean v0, p0, La/g0;->q:Z
+    iget-boolean v0, p0, @CTRL@->q:Z
 
     if-eqz v0, :cond_0
 
-    iget-boolean v0, p0, La/g0;->analogOff:Z
+    iget-boolean v0, p0, @CTRL@->analogOff:Z
 
     xor-int/lit8 v0, v0, 0x1
 
-    invoke-virtual {p0, v0}, La/g0;->setAnalogOff(Z)V
+    invoke-virtual {p0, v0}, @CTRL@->setAnalogOff(Z)V
 
     goto :goto_1
 
     # un boton seleccionado: igual que el original (solo ese)
     :cond_0
-    iget-object v0, p0, La/g0;->p:La/d0;
+    iget-object v0, p0, @CTRL@->p:@BTN_CLS@
 
     if-eqz v0, :cond_1
 
-    iget-boolean v0, v0, La/d0;->p:Z
+    iget-boolean v0, v0, @BTN_CLS@->p:Z
 
     xor-int/lit8 v0, v0, 0x1
 
-    invoke-virtual {p0, v0}, La/g0;->setSelectedOff(Z)V
+    invoke-virtual {p0, v0}, @CTRL@->setSelectedOff(Z)V
 
     return-void
 
     # sin seleccion: todos
     :cond_1
-    invoke-virtual {p0}, La/g0;->toggleAll()V
+    invoke-virtual {p0}, @CTRL@->toggleAll()V
 
     return-void
 
     :goto_1
-    invoke-virtual {p0}, La/g0;->j()V
+    invoke-virtual {p0}, @CTRL@->j()V
 
     invoke-virtual {p0}, Landroid/view/View;->invalidate()V
 
@@ -107,15 +107,15 @@
 .method public final toggleAll()V
     .locals 5
 
-    invoke-virtual {p0}, La/g0;->allOff()Z
+    invoke-virtual {p0}, @CTRL@->allOff()Z
 
     move-result v0
 
     xor-int/lit8 v0, v0, 0x1
 
-    invoke-virtual {p0, v0}, La/g0;->setAnalogOff(Z)V
+    invoke-virtual {p0, v0}, @CTRL@->setAnalogOff(Z)V
 
-    iget-object v1, p0, La/g0;->a:[La/d0;
+    iget-object v1, p0, @CTRL@->a:[@BTN_CLS@
 
     array-length v2, v1
 
@@ -126,16 +126,16 @@
 
     aget-object v4, v1, v3
 
-    iput-boolean v0, v4, La/d0;->p:Z
+    iput-boolean v0, v4, @BTN_CLS@->p:Z
 
     add-int/lit8 v3, v3, 0x1
 
     goto :goto_0
 
     :cond_0
-    invoke-virtual {p0}, La/g0;->p()V
+    invoke-virtual {p0}, @CTRL@->p()V
 
-    invoke-virtual {p0}, La/g0;->j()V
+    invoke-virtual {p0}, @CTRL@->j()V
 
     invoke-virtual {p0}, Landroid/view/View;->invalidate()V
 
